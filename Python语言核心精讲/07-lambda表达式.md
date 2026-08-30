@@ -1,0 +1,297 @@
+---
+chapter: 07
+title: lambda表达式
+course: Python语言核心精讲
+tags:
+  - python
+  - 课件
+  - lambda
+  - 高阶函数
+  - sorted
+  - map
+  - filter
+  - reduce
+---
+
+# Lambda表达式
+
+Lambda表达式用于创建**匿名函数**——即没有名称的临时函数。当你需要一个简单函数且只用一次时，lambda能让代码更简洁。
+
+---
+
+## 基本语法
+
+```python
+lambda 参数1, 参数2, ... : 表达式
+```
+
+```python
+# 普通函数
+def add(x, y):
+    return x + y
+
+# 等价的lambda
+add_lambda = lambda x, y: x + y
+
+print(add(2, 3))         # 5
+print(add_lambda(2, 3))  # 5
+```
+
+**特点：**
+
+- 只能包含**一个表达式**，不能写多条语句
+- 表达式的计算结果**自动返回**
+- 通常不命名，即用即走
+
+---
+
+## Lambda vs 普通函数
+
+| 特性     | Lambda             | 普通函数 (`def`)  |
+| -------- | ------------------ | ----------------- |
+| 名称     | 匿名（通常无名字） | 有函数名          |
+| 函数体   | 只能有一个表达式   | 可以有多条语句    |
+| 返回值   | 自动返回表达式结果 | 需要显式 `return` |
+| 适用场景 | 临时、简单的逻辑   | 复杂、复用的逻辑  |
+
+**原则：** 逻辑简单且只用一次 → 用lambda；逻辑复杂或需要复用 → 用`def`。
+
+---
+
+## 应用场景：内置高阶函数
+
+高阶函数是指接收函数作为参数的函数。这是lambda最经典的使用场景。
+
+### `map()` — 映射
+
+对可迭代对象的每个元素执行指定操作，返回结果的迭代器。
+
+```python
+numbers = [1, 2, 3, 4, 5]
+
+# 普通写法
+def square(x):
+    return x ** 2
+
+result = map(square, numbers)
+print(list(result))  # [1, 4, 9, 16, 25]
+
+# lambda写法——更简洁
+result = map(lambda x: x ** 2, numbers)
+print(list(result))  # [1, 4, 9, 16, 25]
+```
+
+**`map()` 相当于：** 对列表每个元素做"转换"。
+
+```python
+# 将字符串列表转为长度列表
+names = ["Alice", "Bob", "Charlie"]
+lengths = map(lambda s: len(s), names)
+print(list(lengths))  # [5, 3, 7]
+
+# 两个列表对应元素相加
+a = [1, 2, 3]
+b = [10, 20, 30]
+sums = map(lambda x, y: x + y, a, b)
+print(list(sums))  # [11, 22, 33]
+```
+
+---
+
+### `filter()` — 过滤
+
+根据条件筛选可迭代对象中的元素，保留满足条件的。
+
+```python
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+# 筛选偶数
+evens = filter(lambda x: x % 2 == 0, numbers)
+print(list(evens))  # [2, 4, 6, 8, 10]
+
+# 筛选长度大于3的字符串
+words = ["cat", "elephant", "dog", "butterfly"]
+long_words = filter(lambda s: len(s) > 3, words)
+print(list(long_words))  # ['elephant', 'butterfly']
+```
+
+**`filter()` 相当于：** 按条件"筛选"列表。
+
+```python
+# 筛选正数
+nums = [-2, -1, 0, 1, 2]
+positives = filter(lambda x: x > 0, nums)
+print(list(positives))  # [1, 2]
+```
+
+---
+
+### `sorted()` — 排序（指定key）
+
+`sorted()` 和列表的 `.sort()` 都支持 `key` 参数，用于指定"按什么排序"。
+
+```python
+words = ["banana", "pie", "Washington", "book"]
+
+# 按长度排序
+sorted_by_len = sorted(words, key=lambda s: len(s))
+print(sorted_by_len)  # ['pie', 'book', 'banana', 'Washington']
+
+# 按最后一个字母排序
+sorted_by_last = sorted(words, key=lambda s: s[-1])
+print(sorted_by_last)  # ['banana', 'pie', 'book', 'Washington']
+
+# 降序排序
+sorted_desc = sorted(words, key=lambda s: len(s), reverse=True)
+print(sorted_desc)  # ['Washington', 'banana', 'book', 'pie']
+```
+
+```python
+# 按绝对值排序
+nums = [-5, 2, -8, 1, -9]
+sorted_by_abs = sorted(nums, key=lambda x: abs(x))
+print(sorted_by_abs)  # [1, 2, -5, -8, -9]
+```
+
+---
+
+### `max()` / `min()` — 极值（指定key）
+
+```python
+words = ["apple", "banana", "cherry"]
+
+# 找出最长的单词
+longest = max(words, key=lambda s: len(s))
+print(longest)  # banana
+
+# 找出最短的单词
+shortest = min(words, key=lambda s: len(s))
+print(shortest)  # apple
+```
+
+```python
+students = [
+    {"name": "Alice", "score": 85},
+    {"name": "Bob", "score": 92},
+    {"name": "Charlie", "score": 78}
+]
+
+# 找出分数最高的学生
+top_student = max(students, key=lambda s: s["score"])
+print(top_student)  # {'name': 'Bob', 'score': 92}
+```
+
+---
+
+### `reduce()` — 累积计算
+
+`reduce()` 在 `functools` 模块中，用于将序列逐个累积计算为一个值。
+
+```python
+from functools import reduce
+
+numbers = [1, 2, 3, 4, 5]
+
+# 求和
+total = reduce(lambda x, y: x + y, numbers)
+print(total)  # 15
+
+# 求积
+product = reduce(lambda x, y: x * y, numbers)
+print(product)  # 120
+
+# 求最大值
+maximum = reduce(lambda x, y: x if x > y else y, numbers)
+print(maximum)  # 5
+```
+
+---
+
+## 作业
+
+基于下面的产品信息完成练习
+
+```python
+products = [
+  {"name": "iPhone 15", "inc": "APPLE", "price": 5999, "stock": 3012},
+  {"name": "MacBook Pro", "inc": "APPLE", "price": 14999, "stock": 580},
+  {"name": "AirPods Pro", "inc": "APPLE", "price": 1899, "stock": 4500},
+  {"name": "iPad Air", "inc": "APPLE", "price": 4799, "stock": 1200},
+  {"name": "Apple Watch", "inc": "APPLE", "price": 2999, "stock": 2100},
+  {"name": "Galaxy S24", "inc": "SAMSUNG", "price": 5499, "stock": 2800},
+  {"name": "Galaxy Tab", "inc": "SAMSUNG", "price": 3999, "stock": 950},
+  {"name": "Galaxy Buds", "inc": "SAMSUNG", "price": 899, "stock": 3200},
+  {"name": "Galaxy Watch", "inc": "SAMSUNG", "price": 2199, "stock": 1500},
+  {"name": "Mate 60 Pro", "inc": "HUAWEI", "price": 6999, "stock": 800},
+  {"name": "MatePad Pro", "inc": "HUAWEI", "price": 4299, "stock": 1100},
+  {"name": "FreeBuds", "inc": "HUAWEI", "price": 999, "stock": 2600},
+  {"name": "MateBook", "inc": "HUAWEI", "price": 6999, "stock": 670},
+  {"name": "Watch GT", "inc": "HUAWEI", "price": 1488, "stock": 1800},
+  {"name": "Xiaomi 14", "inc": "XIAOMI", "price": 3999, "stock": 3500},
+  {"name": "Redmi K70", "inc": "XIAOMI", "price": 2499, "stock": 4200},
+  {"name": "Mi Pad 6", "inc": "XIAOMI", "price": 1999, "stock": 2000},
+  {"name": "Mi Band 8", "inc": "XIAOMI", "price": 239, "stock": 8000},
+  {"name": "Xiaomi Buds", "inc": "XIAOMI", "price": 499, "stock": 5000},
+  {"name": "Xiaomi Book", "inc": "XIAOMI", "price": 4999, "stock": 890},
+  {"name": "Pixel 8", "inc": "GOOGLE", "price": 4999, "stock": 600},
+  {"name": "Pixel Buds", "inc": "GOOGLE", "price": 1299, "stock": 1500},
+  {"name": "Pixel Watch", "inc": "GOOGLE", "price": 2599, "stock": 900},
+  {"name": "Pixel Tablet", "inc": "GOOGLE", "price": 3499, "stock": 400},
+  {"name": "ThinkPad X1", "inc": "LENOVO", "price": 9999, "stock": 720},
+  {"name": "Legion Y9000", "inc": "LENOVO", "price": 8999, "stock": 1100},
+  {"name": "Tab P12", "inc": "LENOVO", "price": 2499, "stock": 1300},
+  {"name": "Dell XPS 13", "inc": "DELL", "price": 10999, "stock": 650},
+  {"name": "Dell G15", "inc": "DELL", "price": 6999, "stock": 1400},
+  {"name": "Surface Pro", "inc": "MICROSOFT", "price": 8999, "stock": 580},
+  {"name": "Surface Laptop", "inc": "MICROSOFT", "price": 7999, "stock": 700},
+  {"name": "Surface Go", "inc": "MICROSOFT", "price": 3999, "stock": 1200},
+  {"name": "OnePlus 12", "inc": "ONEPLUS", "price": 4299, "stock": 1800},
+  {"name": "OnePlus Buds", "inc": "ONEPLUS", "price": 599, "stock": 3000},
+  {"name": "OnePlus Watch", "inc": "ONEPLUS", "price": 1499, "stock": 1600},
+  {"name": "OPPO Find X7", "inc": "OPPO", "price": 3999, "stock": 2200},
+  {"name": "OPPO Pad 2", "inc": "OPPO", "price": 2999, "stock": 1000},
+  {"name": "OPPO Enco", "inc": "OPPO", "price": 499, "stock": 3500},
+  {"name": "Vivo X100", "inc": "VIVO", "price": 3999, "stock": 2500},
+  {"name": "Vivo Pad 2", "inc": "VIVO", "price": 2499, "stock": 900},
+  {"name": "Vivo TWS", "inc": "VIVO", "price": 399, "stock": 4000},
+]
+```
+
+充分利用本节课学习过的Lambda表达式和内置高阶函数，完成下面的练习
+
+1. 按照价格升序排序
+
+2. 按照价格降序排序
+
+3. 按照库存总额升序排序（库存总额 = 价格 × 库存数量）
+
+4. 找出XIAOMI的所有产品，得到一个字符串列表
+
+5. 找出价格最高的产品所属的公司列表（字符串列表）
+
+6. 得到每家公司产品的平均价格
+   结果示例：
+
+   ```python
+   [
+       {"inc": "HUAWEI", "avg_price": 4156.8},
+       {"inc": "GOOGLE", "avg_price": 3099.0},
+       {"inc": "MICROSOFT", "avg_price": 6999.0},
+       {"inc": "ONEPLUS", "avg_price": 2132.3333333333335},
+       {"inc": "VIVO", "avg_price": 2299.0},
+       {"inc": "XIAOMI", "avg_price": 2372.3333333333335},
+       {"inc": "SAMSUNG", "avg_price": 3149.0},
+       {"inc": "OPPO", "avg_price": 2499.0},
+       {"inc": "DELL", "avg_price": 8999.0},
+       {"inc": "APPLE", "avg_price": 6139.0},
+       {"inc": "LENOVO", "avg_price": 7165.666666666667},
+   ]
+   ```
+
+---
+
+## 参考答案
+
+> 作业源文件位于 `homework/` 目录，下方通过 Obsidian 嵌入直接展示代码。
+
+![[07-p1.py]]
