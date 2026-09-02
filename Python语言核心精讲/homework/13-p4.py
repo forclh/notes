@@ -17,4 +17,4 @@ def fibonacci(n):
     return fibonacci(n - 1) + fibonacci(n - 2)
 
 
-print(fibonacci(60))  # 应该快速返回结果，输出: 9227465
+print(fibonacci(35))  # 应该快速返回结果，输出: 9227465

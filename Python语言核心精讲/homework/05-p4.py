@@ -5,7 +5,12 @@
 def flatten(nested_list):
     result = []
     for item in nested_list:
-        if type(item) is list:
+        # 用 isinstance 而非 type(item) is list：
+        # 1. isinstance 考虑继承，子类（如 class MyList(list)）也能被识别，更符合面向对象；
+        # 2. type() is 只做严格类型匹配，子类不算，且不支持多类型判断；
+        # 3. isinstance(item, (list, tuple)) 可一次匹配多种类型，扩展性更好；
+        # 4. PEP 8 推荐：对象类型检查应使用 isinstance()，而不是直接比较类型。
+        if isinstance(item, list):
             result.extend(flatten(item))
         else:
             result.append(item)
