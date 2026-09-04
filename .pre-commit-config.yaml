@@ -1,0 +1,83 @@
+# 提交前自动格式化 Markdown / Python（未来可加 Java、JS/TS）
+#
+# 与标准 pre-commit 配置不同，这里用 `repo: local` + `language: system`，
+# 直接调用本地已安装的命令，避免在 hook 安装时联网拉取 github 仓库。
+#
+# 一次性安装本地工具链（在每台开发机上各执行一次）：
+#   pip install -i https://pypi.tuna.tsinghua.edu.cn/simple `
+#     pre-commit black isort pre-commit-hooks
+#   npm install -g prettier
+#
+# 启用 hook（clone 仓库后只需执行一次）：
+#   pre-commit install
+#
+# 手动全量跑一次：
+#   pre-commit run --all-files
+#
+# 跳过某次提交：
+#   git commit --no-verify
+
+repos:
+  - repo: local
+    hooks:
+      # ---------- 通用清理 ----------
+      - id: trailing-whitespace
+        name: trailing-whitespace-fixer
+        entry: trailing-whitespace-fixer
+        language: system
+        types: [text]
+
+      - id: end-of-file-fixer
+        name: end-of-file-fixer
+        entry: end-of-file-fixer
+        language: system
+        types: [text]
+
+      - id: check-yaml
+        name: check-yaml
+        entry: check-yaml
+        language: system
+        types: [yaml]
+
+      - id: check-merge-conflict
+        name: check-merge-conflict
+        entry: check-merge-conflict
+        language: system
+        types: [text]
+
+      - id: check-added-large-files
+        name: check-added-large-files
+        entry: check-added-large-files
+        language: system
+        args: [--maxkb=500]
+
+      # ---------- Python ----------
+      # 顺序很重要：isort 先排序 import，black 再整体格式化
+      - id: isort
+        name: isort (import sort)
+        entry: isort
+        language: system
+        files: \.py$
+        args: [--profile=black, --line-length=88]
+
+      - id: black
+        name: black
+        entry: black
+        language: system
+        files: \.py$
+        args: [--line-length=88]
+
+      # ---------- Markdown / JS / TS ----------
+      # 用 Prettier 而非 mdformat：mdformat 会把 `---` thematic break 强制
+      # 改成 `____`，破坏 Obsidian 视觉分隔；Prettier 输出标准 `---`，且原生
+      # 保留 `[[wikilink]]` / `![[image]]` / YAML frontmatter。
+      # 配置见 .prettierrc.json（关键项：proseWrap=preserve，不重排段落）。
+      # Prettier 原生支持 md / js / ts / jsx / tsx / json / css / yaml，
+      # 未来加 Java 只需在 files 正则里追加 |java，再加一个独立的
+      # google-java-format hook 即可（Java Prettier 支持较弱）。
+      - id: prettier
+        name: prettier (md/js/ts)
+        entry: prettier --write
+        language: system
+        files: \.(md|json|js|cjs|mjs|ts|cts|mts|jsx|tsx|css|scss|yaml|yml)$
+        exclude: ^\.obsidian/

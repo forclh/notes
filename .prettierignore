@@ -1,0 +1,4 @@
+# Prettier 忽略清单
+.obsidian/
+.git/
+*.sample
