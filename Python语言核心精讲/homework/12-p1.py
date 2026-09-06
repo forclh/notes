@@ -7,8 +7,6 @@ class SingletonMeta(type):
             cls._instance[cls] = ins
         return cls._instance[cls]
 
-    pass
-
 
 class Database(metaclass=SingletonMeta):
     def __init__(self, host):

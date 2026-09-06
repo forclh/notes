@@ -7,8 +7,6 @@ class PluginMeta(type):
             mcs.registry[name] = cls
         return cls
 
-    pass
-
 
 class Plugin(metaclass=PluginMeta):
     pass
