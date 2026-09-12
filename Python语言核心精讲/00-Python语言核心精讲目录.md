@@ -34,11 +34,14 @@ tags:
 | 15   | [[15-描述符]]                                     | 描述符协议、数据/非数据描述符、访问顺序、`__set_name__`、`@property` 原理、惰性计算/类型检查       |
 | 16   | [[16-异常处理]]                                   | `try`/`except`/`else`/`finally`、异常层次结构、`raise`、自定义异常、异常链                         |
 | 17   | [[17-迭代器与生成器]]                             | 迭代器协议、可迭代对象、消费者、`range`、推导式、生成器与 `yield`、`yield from`、`send`、itertools |
+| 18   | [[18-上下文管理器]]                               | `with` 执行流程、`__enter__`/`__exit__`、异常抑制、`@contextmanager`、多上下文管理器               |
+| 19   | [[19-ABC]]                                        | 抽象类、`@abstractmethod`、抽象属性、接口约束、插件/数据源应用场景                                 |
+| 20   | [[20-类型标注]]                                   | 变量/函数标注、`Optional`/`Union`、容器类型、`Self`、泛型、`Callable`、`TypedDict`、`type: ignore` |
 
 ## 按标签浏览
 
 - 课件：`#课件`
-- 主题索引：`#list` `#dict` `#set` `#tuple` · `#函数` `#作用域` `#闭包` · `#lambda` `#高阶函数` · `#类` `#对象` `#继承` `#MRO` `#元类` `#__new__` `#单例模式` `#可调用对象` `#__call__` `#metaclass` `#魔术方法` `#__str__` `#__getitem__` `#描述符` `#property` · `#装饰器` `#wraps` · `#异常处理` `#try` `#except` `#raise` `#异常链` · `#迭代器` `#可迭代对象` `#生成器` `#yield` `#推导式` `#itertools`
+- 主题索引：`#list` `#dict` `#set` `#tuple` · `#函数` `#作用域` `#闭包` · `#lambda` `#高阶函数` · `#类` `#对象` `#继承` `#MRO` `#元类` `#__new__` `#单例模式` `#可调用对象` `#__call__` `#metaclass` `#魔术方法` `#__str__` `#__getitem__` `#描述符` `#property` · `#装饰器` `#wraps` · `#异常处理` `#try` `#except` `#raise` `#异常链` · `#迭代器` `#可迭代对象` `#生成器` `#yield` `#推导式` `#itertools` · `#上下文管理器` `#with` `#contextmanager` · `#ABC` `#抽象类` `#abstractmethod` · `#类型标注` `#typing` `#泛型` `#TypedDict` `#Callable`
 - 工具链：`#pyenv` `#VSCode`
 
 ## 目录结构
@@ -63,6 +66,9 @@ Python语言核心精讲/
 ├── 15-描述符.md
 ├── 16-异常处理.md
 ├── 17-迭代器与生成器.md
+├── 18-上下文管理器.md
+├── 19-ABC.md
+├── 20-类型标注.md
 └── homework/                ← 所有作业 .py 集中于此
     ├── 02-hello.py
     ├── 03-p1.py … 03-p4.py
@@ -78,7 +84,10 @@ Python语言核心精讲/
     ├── 14-p1.py
     ├── 15-p1.py … 15-p3.py
     ├── 16-p1.py … 16-p4.py
-    └── 17-p1.py … 17-p3.py
+    ├── 17-p1.py … 17-p3.py
+    ├── 18-p1.py … 18-p3-1.py
+    ├── 19-p1.py … 19-p3.py
+    └── 20-p1.py … 20-p4.py
 ```
 
 ## 笔记结构约定
@@ -107,3 +116,6 @@ Python语言核心精讲/
 - [x] 15 描述符
 - [x] 16 异常处理
 - [x] 17 迭代器与生成器
+- [x] 18 上下文管理器
+- [x] 19 ABC
+- [x] 20 类型标注
