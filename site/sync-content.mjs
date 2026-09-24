@@ -134,9 +134,19 @@ for (const { dir, short, srcDir, notes } of subjects) {
   const pyIndex = new Map(pyFiles.map((f) => [f, path.join(destDir, "homework", f)]));
 
   for (const { file, name, code } of notes) {
-    const text = fs.readFileSync(file, "utf8");
+    let text = fs.readFileSync(file, "utf8");
+    // 内容副本的 title 加章节号前缀：explorer 按显示名排序，保证目录按章节顺序排列
+    const chapter = frontmatterOf(text).yaml.match(/^chapter:\s*(.+)$/m)?.[1].trim();
+    if (chapter) {
+      text = text.replace(/^(title:\s*)/m, `$1${chapter} `);
+    }
     // 内容文件名已是短码，permalink 会与 alias-redirects 冲突（自己跳自己），从内容中移除
-    const body = text.replace(/^permalink:.*$\r?\n?/m, "");
+    let body = text.replace(/^permalink:.*$\r?\n?/m, "");
+    // 页面标题由 frontmatter 的 title 渲染，去掉正文开头重复的一级标题（与官网样式一致）
+    body = body.replace(
+      /^(---\r?\n[\s\S]*?\r?\n---\r?\n?)(?:[ \t]*\r?\n)*(#[ \t]+[^\n]*\r?\n+)/,
+      "$1"
+    );
     const transformed = rewriteWikiLinks(body).replace(
       /!\[\[([^\]|#]+\.py)(?:\|[^\]]*)?\]\]/g,
       (_, pyName) => {
@@ -157,8 +167,9 @@ for (const { dir, short, srcDir, notes } of subjects) {
 // ---------- 第 4 步：生成首页（专题目录页的正文，同样重写双链） ----------
 const moc = subjects[0].notes.find((n) => path.basename(n.file).startsWith("00-"));
 if (moc) {
-  const { body } = frontmatterOf(fs.readFileSync(moc.file, "utf8")) ?? { body: "" };
-  fs.writeFileSync(
+  let { body } = frontmatterOf(fs.readFileSync(moc.file, "utf8")) ?? { body: "" };
+  // 首页标题为 AK's Notes，同样去掉正文开头重复的一级标题
+  body = body.replace(/^(?:[ \t]*\r?\n)*(#[ \t]+[^\n]*\r?\n+)/, "");  fs.writeFileSync(
     path.join(contentDir, "index.md"),
     `---\ntitle: AK's Notes\n---\n${rewriteWikiLinks(body)}`
   );

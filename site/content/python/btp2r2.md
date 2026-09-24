@@ -1,6 +1,6 @@
 ---
 chapter: 02
-title: Python环境安装
+title: 02 Python环境安装
 course: Python语言核心精讲
 tags:
   - python
@@ -9,9 +9,6 @@ tags:
   - pyenv
   - VSCode
 ---
-
-# Python环境搭建
-
 ## Python安装包
 
 Python安装包中包含以下核心组件：

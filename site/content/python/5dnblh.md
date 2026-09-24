@@ -1,6 +1,6 @@
 ---
 chapter: 08
-title: 类和对象
+title: 08 类和对象
 course: Python语言核心精讲
 tags:
   - python
@@ -15,9 +15,6 @@ tags:
   - isinstance
   - getattr
 ---
-
-# 类和对象
-
 Python 是一门**面向对象**的编程语言。类（Class）是创建对象的蓝图，而对象（Object）是类的具体实例。通过类和对象，可以将数据（属性）和行为（方法）封装在一起，使代码更具结构性和可复用性。
 
 ---

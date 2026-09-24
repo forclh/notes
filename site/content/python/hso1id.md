@@ -1,6 +1,6 @@
 ---
 chapter: 03
-title: Python基本语法
+title: 03 Python基本语法
 course: Python语言核心精讲
 tags:
   - python
@@ -10,9 +10,6 @@ tags:
   - 运算符
   - 流程控制
 ---
-
-# Python基本语法
-
 ## 语言基本特征
 
 - **解释型**

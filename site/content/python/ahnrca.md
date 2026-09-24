@@ -1,6 +1,6 @@
 ---
 chapter: 07
-title: lambda表达式
+title: 07 lambda表达式
 course: Python语言核心精讲
 tags:
   - python
@@ -12,9 +12,6 @@ tags:
   - filter
   - reduce
 ---
-
-# Lambda表达式
-
 Lambda表达式用于创建**匿名函数**——即没有名称的临时函数。当你需要一个简单函数且只用一次时，lambda能让代码更简洁。
 
 ---

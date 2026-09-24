@@ -1,6 +1,6 @@
 ---
 chapter: 18
-title: 上下文管理器
+title: 18 上下文管理器
 course: Python语言核心精讲
 tags:
   - python
@@ -12,9 +12,6 @@ tags:
   - contextmanager
   - contextlib
 ---
-
-# 上下文管理器
-
 ## with 语句的执行流程
 
 ```python

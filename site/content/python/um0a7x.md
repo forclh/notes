@@ -1,6 +1,6 @@
 ---
 chapter: 09
-title: 对象的类型
+title: 09 对象的类型
 course: Python语言核心精讲
 tags:
   - python
@@ -12,9 +12,6 @@ tags:
   - 元类
   - 私有成员
 ---
-
-# 对象的类型
-
 ## 知识补充
 
 ### 使用 `type()` 动态定义类

@@ -1,6 +1,6 @@
 ---
 chapter: 04
-title: 容器类型
+title: 04 容器类型
 course: Python语言核心精讲
 tags:
   - python
@@ -11,9 +11,6 @@ tags:
   - dict
   - set
 ---
-
-# Python容器类型
-
 ## 什么是容器类型
 
 容器类型用于**存储多个数据**。Python中内置的容器类型包括：

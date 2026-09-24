@@ -1,15 +1,12 @@
 ---
 chapter: 00
-title: Python语言核心精讲
+title: 00 Python语言核心精讲
 type: MOC
 tags:
   - python
   - 目录
   - MOC
 ---
-
-# Python语言核心精讲
-
 > 本课程的学习路径索引。各章节笔记采用 Obsidian 友好的扁平结构组织：所有 `.md` 笔记直接放在本目录下，所有作业 `.py` 集中在 `homework/` 文件夹；笔记通过 `![[...]]` 嵌入作业源码，既可阅读又可运行。
 
 ## 学习路径

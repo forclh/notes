@@ -1,6 +1,6 @@
 ---
 chapter: 17
-title: 迭代器与生成器
+title: 17 迭代器与生成器
 course: Python语言核心精讲
 tags:
   - python
@@ -12,9 +12,6 @@ tags:
   - 推导式
   - itertools
 ---
-
-# 迭代器与生成器
-
 ## 迭代器（Iterator）
 
 迭代器是实现了 `__iter__` 和 `__next__` 方法的对象：

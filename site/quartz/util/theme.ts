@@ -41,6 +41,10 @@ const DEFAULT_SANS_SERIF =
   'system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"'
 const DEFAULT_MONO = "ui-monospace, SFMono-Regular, SF Mono, Menlo, monospace"
 
+// 官方主题字体（Schibsted Grotesk / Source Sans Pro / IBM Plex Mono）不含汉字，
+// 在其后追加一个从 Google Fonts 加载的中文字体，避免中文回退到各系统默认字体
+const CJK_FALLBACK_FONT = "Noto Sans SC"
+
 export function getFontSpecificationName(spec: FontSpecification): string {
   if (typeof spec === "string") {
     return spec
@@ -90,8 +94,9 @@ export function googleFontHref(theme: Theme) {
   const headerFont = formatFontSpecification("header", header)
   const bodyFont = formatFontSpecification("body", body)
   const codeFont = formatFontSpecification("code", code)
+  const cjkFont = `${CJK_FALLBACK_FONT.replace(/ /g, "+")}:wght@400;500;700`
 
-  return `https://fonts.googleapis.com/css2?family=${headerFont}&family=${bodyFont}&family=${codeFont}&display=swap`
+  return `https://fonts.googleapis.com/css2?family=${headerFont}&family=${bodyFont}&family=${codeFont}&family=${cjkFont}&display=swap`
 }
 
 export function googleFontSubsetHref(theme: Theme, text: string) {
@@ -188,10 +193,10 @@ ${stylesheet.join("\n\n")}
   --highlight: ${theme.colors.lightMode.highlight};
   --textHighlight: ${theme.colors.lightMode.textHighlight};
 
-  --titleFont: "${getFontSpecificationName(theme.typography.title || theme.typography.header)}", ${DEFAULT_SANS_SERIF};
-  --headerFont: "${getFontSpecificationName(theme.typography.header)}", ${DEFAULT_SANS_SERIF};
-  --bodyFont: "${getFontSpecificationName(theme.typography.body)}", ${DEFAULT_SANS_SERIF};
-  --codeFont: "${getFontSpecificationName(theme.typography.code)}", ${DEFAULT_MONO};
+  --titleFont: "${getFontSpecificationName(theme.typography.title || theme.typography.header)}", "${CJK_FALLBACK_FONT}", ${DEFAULT_SANS_SERIF};
+  --headerFont: "${getFontSpecificationName(theme.typography.header)}", "${CJK_FALLBACK_FONT}", ${DEFAULT_SANS_SERIF};
+  --bodyFont: "${getFontSpecificationName(theme.typography.body)}", "${CJK_FALLBACK_FONT}", ${DEFAULT_SANS_SERIF};
+  --codeFont: "${getFontSpecificationName(theme.typography.code)}", "${CJK_FALLBACK_FONT}", ${DEFAULT_MONO};
 }
 
 :root[saved-theme="dark"] {

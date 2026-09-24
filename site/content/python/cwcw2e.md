@@ -1,6 +1,6 @@
 ---
 chapter: 14
-title: 魔术方法
+title: 14 魔术方法
 course: Python语言核心精讲
 tags:
   - python
@@ -14,9 +14,6 @@ tags:
   - __getattr__
   - total_ordering
 ---
-
-# 魔术方法
-
 魔术方法（Magic Methods）是 Python 中**以双下划线开头和结尾**的特殊方法，如 `__init__`、`__str__`。它们不需要显式调用，而是由 Python 在特定场景下**自动触发**。
 
 ## 字符串表示

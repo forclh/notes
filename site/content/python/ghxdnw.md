@@ -1,6 +1,6 @@
 ---
 chapter: 12
-title: 元类
+title: 12 元类
 course: Python语言核心精讲
 tags:
   - python
@@ -11,9 +11,6 @@ tags:
   - __new__
   - __call__
 ---
-
-# 元类
-
 ## 类的创建过程
 
 使用 `class` 关键字定义类时，Python 底层会调用元类来创建类：

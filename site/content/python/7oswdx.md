@@ -1,6 +1,6 @@
 ---
 chapter: 10
-title: 对象的创建过程
+title: 10 对象的创建过程
 course: Python语言核心精讲
 tags:
   - python
@@ -12,9 +12,6 @@ tags:
   - 单例模式
   - 元类
 ---
-
-# 对象的创建过程
-
 ## 对象创建的伪代码
 
 当我们写 `Person("shae", 5)` 时，Python 实际上做了下面三件事：

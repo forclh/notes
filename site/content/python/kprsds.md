@@ -1,6 +1,6 @@
 ---
 chapter: 11
-title: 可调用对象
+title: 11 可调用对象
 course: Python语言核心精讲
 tags:
   - python
@@ -9,9 +9,6 @@ tags:
   - __call__
   - callable
 ---
-
-# 可调用对象
-
 在 Python 中，**可调用对象（Callable）** 是指可以像函数一样使用括号 `()` 调用的对象。
 
 ## 如何判断对象是否可调用

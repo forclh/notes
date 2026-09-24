@@ -1,6 +1,6 @@
 ---
 chapter: 06
-title: 作用域
+title: 06 作用域
 course: Python语言核心精讲
 tags:
   - python
@@ -10,9 +10,6 @@ tags:
   - global
   - nonlocal
 ---
-
-# Python作用域
-
 作用域（Scope）决定了程序中变量和名字的**可见范围**。理解作用域能帮助你预测代码的执行结果，避免变量名冲突。
 
 ---

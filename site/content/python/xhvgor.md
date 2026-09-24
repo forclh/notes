@@ -1,15 +1,12 @@
 ---
 chapter: 01
-title: 必看导言
+title: 01 必看导言
 course: Python语言核心精讲
 tags:
   - python
   - 课件
   - 导言
 ---
-
-# 必看导言
-
 ==为什么要学习 Python ？==
 
 开发Agents目前主要有两种语言：`Python`和`TypeScript`

@@ -1,6 +1,6 @@
 ---
 chapter: 20
-title: 类型标注
+title: 20 类型标注
 course: Python语言核心精讲
 tags:
   - python
@@ -12,9 +12,6 @@ tags:
   - TypedDict
   - Callable
 ---
-
-# 类型标注
-
 > 现在开始，开启 `python.analysis.typeCheckingMode`（VSCode 设置项）
 
 ## 为什么需要类型标注

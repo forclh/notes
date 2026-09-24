@@ -1,6 +1,6 @@
 ---
 chapter: 15
-title: 描述符
+title: 15 描述符
 course: Python语言核心精讲
 tags:
   - python
@@ -11,9 +11,6 @@ tags:
   - property
   - __set_name__
 ---
-
-# 描述符
-
 ## 问题
 
 ```python

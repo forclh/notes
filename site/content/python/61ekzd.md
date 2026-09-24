@@ -1,6 +1,6 @@
 ---
 chapter: 19
-title: ABC（抽象类）
+title: 19 ABC（抽象类）
 course: Python语言核心精讲
 tags:
   - python
@@ -11,9 +11,6 @@ tags:
   - 接口
   - 继承
 ---
-
-# 抽象类（ABC）
-
 抽象类是**不能被实例化**的类，用于定义子类**必须实现**的接口。Python 通过 `abc` 模块提供抽象类的支持。
 
 ```python

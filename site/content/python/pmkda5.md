@@ -1,6 +1,6 @@
 ---
 chapter: 16
-title: 异常处理
+title: 16 异常处理
 course: Python语言核心精讲
 tags:
   - python
@@ -13,9 +13,6 @@ tags:
   - 异常链
   - 自定义异常
 ---
-
-# 异常处理
-
 ## 异常的捕获
 
 使用 `try...except` 捕获可能发生的异常：

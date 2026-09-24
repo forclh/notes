@@ -23,3 +23,7 @@ _Avoid_: 索引、首页
 **短码**:
 每篇笔记在网站 URL 中的永久唯一标识，首次发布时随机分配后固定不变，与文件名和标题无关。
 _Avoid_: slug、编码、ID
+
+**官网样式**:
+以 Quartz 官方文档站（quartz.jzhao.xyz）为基准的视觉风格：不加载任何第三方主题包（原生默认样式）、官方字体并补充中文字体、标题下方仅保留日期与阅读时长，不显示 Properties 折叠块和面包屑。
+_Avoid_: minimal 主题、Obsidian 样式、quartz-themes 主题包

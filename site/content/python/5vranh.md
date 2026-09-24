@@ -1,6 +1,6 @@
 ---
 chapter: 13
-title: 装饰器
+title: 13 装饰器
 course: Python语言核心精讲
 tags:
   - python
@@ -9,9 +9,6 @@ tags:
   - wraps
   - functools
 ---
-
-# 装饰器
-
 ## 装饰器的本质
 
 装饰器本质上是一个**接受函数作为参数并返回新函数**的高阶函数：
