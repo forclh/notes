@@ -1,4 +1,5 @@
 ---
+permalink: python/mv8kys
 chapter: 00
 title: Python语言核心精讲
 type: MOC

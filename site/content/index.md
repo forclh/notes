@@ -1,0 +1,115 @@
+---
+title: AK's Notes
+---
+
+# Python语言核心精讲
+
+> 本课程的学习路径索引。各章节笔记采用 Obsidian 友好的扁平结构组织：所有 `.md` 笔记直接放在本目录下，所有作业 `.py` 集中在 `homework/` 文件夹；笔记通过 `![[...]]` 嵌入作业源码，既可阅读又可运行。
+
+## 学习路径
+
+| 章节 | 笔记                                              | 主题                                                                                               |
+| ---- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| 00   | [[python/mv8kys\|Python语言核心精讲]] | 索引页（本页）                                                                                     |
+| 01   | [[python/xhvgor]]                                   | 导言                                                                                               |
+| 02   | [[python/btp2r2]]                             | 环境搭建、pyenv、VSCode                                                                            |
+| 03   | [[python/hso1id]]                             | 类型、运算符、流程控制                                                                             |
+| 04   | [[python/brehox]]                                   | list / tuple / dict / set                                                                          |
+| 05   | [[python/eiv7ma]]                                       | 参数、返回值、文档字符串                                                                           |
+| 06   | [[python/sqxuzh]]                                     | LEGB、global、nonlocal、闭包                                                                       |
+| 07   | [[python/ahnrca]]                               | lambda、高阶函数、sorted/map/filter/reduce                                                         |
+| 08   | [[python/5dnblh]]                                   | 类定义、`__init__`、实例/类属性、方法、继承、MRO、访问控制、`type`/`isinstance`/`getattr` 等       |
+| 09   | [[python/um0a7x]]                                 | `type()` 动态建类、MRO、私有成员、对象/类/`type`/`object`/`function` 关系、成员查找顺序            |
+| 10   | [[python/7oswdx]]                             | `__new__` / `__init__` 协作、单例模式、对象池、返回不同类型对象                                    |
+| 11   | [[python/kprsds]]                                 | `callable()`、`__call__`、可配置函数对象、状态保持回调                                             |
+| 12   | [[python/ghxdnw]]                                       | `type` 与 `class` 语法糖、自定义元类、元类查找顺序、元类三钩子                                     |
+| 13   | [[python/5vranh]]                                     | 装饰器语法、functools.wraps                                                                        |
+| 14   | [[python/cwcw2e]]                                   | `__str__`/`__repr__`、比较、算术、容器协议、类型转换、属性拦截、`__del__`                          |
+| 15   | [[python/lntcgo]]                                     | 描述符协议、数据/非数据描述符、访问顺序、`__set_name__`、`@property` 原理、惰性计算/类型检查       |
+| 16   | [[python/pmkda5]]                                   | `try`/`except`/`else`/`finally`、异常层次结构、`raise`、自定义异常、异常链                         |
+| 17   | [[python/mibocn]]                             | 迭代器协议、可迭代对象、消费者、`range`、推导式、生成器与 `yield`、`yield from`、`send`、itertools |
+| 18   | [[python/lmjdlx]]                               | `with` 执行流程、`__enter__`/`__exit__`、异常抑制、`@contextmanager`、多上下文管理器               |
+| 19   | [[python/61ekzd]]                                        | 抽象类、`@abstractmethod`、抽象属性、接口约束、插件/数据源应用场景                                 |
+| 20   | [[python/m8duna]]                                   | 变量/函数标注、`Optional`/`Union`、容器类型、`Self`、泛型、`Callable`、`TypedDict`、`type: ignore` |
+
+## 按标签浏览
+
+- 课件：`#课件`
+- 主题索引：`#list` `#dict` `#set` `#tuple` · `#函数` `#作用域` `#闭包` · `#lambda` `#高阶函数` · `#类` `#对象` `#继承` `#MRO` `#元类` `#__new__` `#单例模式` `#可调用对象` `#__call__` `#metaclass` `#魔术方法` `#__str__` `#__getitem__` `#描述符` `#property` · `#装饰器` `#wraps` · `#异常处理` `#try` `#except` `#raise` `#异常链` · `#迭代器` `#可迭代对象` `#生成器` `#yield` `#推导式` `#itertools` · `#上下文管理器` `#with` `#contextmanager` · `#ABC` `#抽象类` `#abstractmethod` · `#类型标注` `#typing` `#泛型` `#TypedDict` `#Callable`
+- 工具链：`#pyenv` `#VSCode`
+
+## 目录结构
+
+```
+Python语言核心精讲/
+├── 00-Python语言核心精讲目录.md   ← 本 MOC 索引页
+├── 01-必看导言.md
+├── 02-Python环境安装.md
+├── 03-Python基本语法.md
+├── 04-容器类型.md
+├── 05-函数.md
+├── 06-作用域.md
+├── 07-lambda表达式.md
+├── 08-类和对象.md
+├── 09-对象的类型.md
+├── 10-对象的创建过程.md
+├── 11-可调用对象.md
+├── 12-元类.md
+├── 13-装饰器.md
+├── 14-魔术方法.md
+├── 15-描述符.md
+├── 16-异常处理.md
+├── 17-迭代器与生成器.md
+├── 18-上下文管理器.md
+├── 19-ABC.md
+├── 20-类型标注.md
+└── homework/                ← 所有作业 .py 集中于此
+    ├── 02-hello.py
+    ├── 03-p1.py … 03-p4.py
+    ├── 04-p1.py … 04-p6.py
+    ├── 05-p1.py … 05-p4.py
+    ├── 06-p1.py … 06-p5.py
+    ├── 07-p1.py
+    ├── 08-p1.py … 08-p3.py
+    ├── 10-p1.py
+    ├── 11-p1.py … 11-p2.py
+    ├── 12-p1.py … 12-p3.py
+    ├── 13-p1.py … 13-p5.py
+    ├── 14-p1.py
+    ├── 15-p1.py … 15-p3.py
+    ├── 16-p1.py … 16-p4.py
+    ├── 17-p1.py … 17-p3.py
+    ├── 18-p1.py … 18-p3-1.py
+    ├── 19-p1.py … 19-p3.py
+    └── 20-p1.py … 20-p4.py
+```
+
+## 笔记结构约定
+
+- **章节笔记**：`NN-章节名.md`，直接放在本目录下，文件名含章节号与主题，便于 Obsidian 搜索 / 标签页 / 反向链接识别。
+- **作业源文件**：统一放在 `homework/` 文件夹；命名加章节前缀（如 `03-p1.py`、`13-p5.py`），避免 Obsidian 嵌入链接冲突，也便于全局查找。
+- **嵌入**：在章节笔记的 `## 参考答案` 段使用 `![[NN-pN.py]]` 嵌入，Obsidian 阅读视图会按 basename 解析并直接渲染代码，无需关心 .py 实际所在子目录。
+- **frontmatter**：每篇笔记带 `chapter / title / course / tags`，MOC 用 `chapter: 00` 标识，支持关系图谱与标签筛选。
+
+## 进度
+
+- [x] 01 必看导言
+- [x] 02 Python环境安装
+- [x] 03 Python基本语法
+- [x] 04 容器类型
+- [x] 05 函数
+- [x] 06 作用域
+- [x] 07 lambda表达式
+- [x] 08 类和对象
+- [x] 09 对象的类型
+- [x] 10 对象的创建过程
+- [x] 11 可调用对象
+- [x] 12 元类
+- [x] 13 装饰器
+- [x] 14 魔术方法
+- [x] 15 描述符
+- [x] 16 异常处理
+- [x] 17 迭代器与生成器
+- [x] 18 上下文管理器
+- [x] 19 ABC
+- [x] 20 类型标注

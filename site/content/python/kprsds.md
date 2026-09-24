@@ -1,0 +1,213 @@
+---
+chapter: 11
+title: 可调用对象
+course: Python语言核心精讲
+tags:
+  - python
+  - 课件
+  - 可调用对象
+  - __call__
+  - callable
+---
+
+# 可调用对象
+
+在 Python 中，**可调用对象（Callable）** 是指可以像函数一样使用括号 `()` 调用的对象。
+
+## 如何判断对象是否可调用
+
+使用内置函数 `callable()`：
+
+```python
+print(callable(len))        # True，内置函数
+print(callable(int))        # True，类
+print(callable([1, 2]))     # False，列表不可调用
+print(callable(lambda: 1))  # True，lambda 表达式
+```
+
+函数是最常见的可调用对象：
+
+```python
+def greet(name):
+    return f"Hello, {name}!"
+
+print(callable(greet))  # True
+print(greet("Alice"))   # Hello, Alice!
+```
+
+类也是可调用对象：
+
+```python
+class Dog:
+    def __init__(self, name):
+        self.name = name
+
+print(callable(Dog))    # True
+my_dog = Dog("Buddy")   # 调用类，创建实例
+print(my_dog.name)      # Buddy
+```
+
+## 让对象变成可调用对象
+
+在类中定义 `__call__` 方法，**实例**就变成了可调用对象：
+
+```python
+class Adder:
+    def __init__(self, n):
+        self.n = n
+
+    def __call__(self, x):
+        return self.n + x
+
+add_5 = Adder(5)
+print(callable(add_5))   # True
+# add_5(10) 等效于 Adder.__call__(add_5, 10)
+print(add_5(10))         # 15，像函数一样调用
+print(add_5(100))        # 105
+```
+
+**关键理解：**
+
+- `__call__` 让**实例**可以像函数一样被调用，`obj(args)` 等价于 `type(obj).__call__(obj, args)`；同理，调用类 `Cls(args)` 走的也是 `type.__call__`，对象创建过程（先 `__new__` 后 `__init__`）就是在 `type.__call__` 中编排的
+- 调用实例时，传入的参数会传给 `__call__` 方法
+
+## 实际应用场景
+
+### 1. 实现可配置的函数对象
+
+```python
+class Multiplier:
+    def __init__(self, factor):
+        self.factor = factor
+
+    def __call__(self, value):
+        return self.factor * value
+
+double = Multiplier(2)
+triple = Multiplier(3)
+
+print(double(5))   # 10
+triple(5)   # 15
+```
+
+### 2. 实现状态保持的回调函数
+
+```python
+class Logger:
+    def __init__(self, prefix):
+        self.prefix = prefix
+        self.log_count = 0
+
+    def __call__(self, message):
+        self.log_count += 1
+        print(f"[{self.prefix}] #{self.log_count}: {message}")
+
+error_log = Logger("ERROR")
+error_log("文件未找到")     # [ERROR] #1: 文件未找到
+error_log("网络连接失败")   # [ERROR] #2: 网络连接失败
+```
+
+## 作业
+
+### 一、实现一个计数器类
+
+编写一个 `Counter` 类：
+
+1. 初始化时指定起始值
+2. 每次调用实例，计数器值加 1
+3. 支持 `reset()` 方法重置为初始值
+4. 支持 `get()` 方法获取当前值
+
+```python
+c = Counter(10)
+print(c())      # 11
+c()             # 12
+print(c.get())  # 12
+c.reset()
+print(c.get())  # 10
+```
+
+### 二、思考题
+
+下面代码的输出是什么？为什么？
+
+```python
+class A:
+    def __call__(self):
+        print("A called")
+
+class B(A):
+    def __call__(self):
+        print("B called")
+        super().__call__()
+
+b = B()
+b()
+```
+
+---
+
+## 参考答案
+
+> 作业源文件位于 `homework/` 目录，下方通过 Obsidian 嵌入直接展示代码。
+
+```python
+# 第一题：实现一个计数器类
+
+
+class Counter:
+    def __init__(self, start):
+        self.start = start
+        self.value = start
+
+    def __call__(self):
+        self.value += 1
+        return self.value
+
+    def reset(self):
+        self.value = self.start
+
+    def get(self):
+        return self.value
+
+
+# ============ 测试代码 ============
+
+c = Counter(10)
+print(c())  # 11
+c()  # 12
+print(c.get())  # 12
+c.reset()
+print(c.get())  # 10
+```
+
+```python
+# 第二题：思考题
+
+# 题目：下面代码的输出是什么？为什么？
+
+
+class A:
+    def __call__(self):
+        print("A called")
+
+
+class B(A):
+    def __call__(self):
+        print("B called")
+        super().__call__()
+
+
+b = B()
+b()
+
+# 输出结果：
+# B called
+# A called
+
+# 原因：
+# 1. b() 会调用 B.__call__(b)
+# 2. B.__call__ 先打印 "B called"
+# 3. 然后通过 super().__call__() 调用父类 A 的 __call__ 方法
+# 4. A.__call__ 打印 "A called"
+```

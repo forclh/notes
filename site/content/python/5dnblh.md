@@ -1,0 +1,1081 @@
+---
+chapter: 08
+title: 类和对象
+course: Python语言核心精讲
+tags:
+  - python
+  - 课件
+  - 类
+  - 对象
+  - 继承
+  - MRO
+  - 类方法
+  - 静态方法
+  - 访问控制
+  - isinstance
+  - getattr
+---
+
+# 类和对象
+
+Python 是一门**面向对象**的编程语言。类（Class）是创建对象的蓝图，而对象（Object）是类的具体实例。通过类和对象，可以将数据（属性）和行为（方法）封装在一起，使代码更具结构性和可复用性。
+
+---
+
+## 定义类
+
+使用 `class` 关键字定义类：
+
+```python
+class Dog:
+    pass
+
+# 创建实例
+my_dog = Dog()
+print(type(my_dog))  # <class '__main__.Dog'>
+```
+
+### 使用 `type()` 动态定义类
+
+类本身也是对象，`type()` 是创建类的内置函数。可以动态地创建类：
+
+```python
+# type(类名, (父类元组,), {属性字典})
+
+# 定义方法
+def bark(self):
+    print(f"{self.name} says: Woof!")
+
+# 动态创建 Dog 类
+Dog = type('Dog', (), {'name': 'Buddy', 'bark': bark})
+
+# 创建实例
+my_dog = Dog()
+print(my_dog.name)  # Buddy
+my_dog.bark()       # Buddy says: Woof!
+```
+
+**参数说明：**
+
+- 第一个参数：类名（字符串）
+- 第二个参数：继承的父类元组
+- 第三个参数：类属性和方法的字典
+
+**实际应用场景：** 在 ORM 框架或需要根据配置动态生成类的场景中经常使用。
+
+---
+
+## 构造方法 `__init__`
+
+`__init__` 是类的构造方法，在创建对象时自动调用，用于初始化对象的属性：
+
+```python
+class Dog:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+# 创建对象时传入参数
+my_dog = Dog("Buddy", 3)
+print(my_dog.name)  # Buddy
+print(my_dog.age)   # 3
+```
+
+**注意：** `self` 代表对象本身，必须是第一个参数，但调用时不需要传。
+
+---
+
+## 实例属性与类属性
+
+### 实例属性
+
+每个对象独立的属性，通过 `self` 定义：
+
+```python
+class Dog:
+    def __init__(self, name):
+        self.name = name  # 实例属性
+
+dog1 = Dog("Buddy")
+dog2 = Dog("Max")
+
+print(dog1.name)  # Buddy
+print(dog2.name)  # Max
+```
+
+### 类属性
+
+所有对象共享的属性，在类内部直接定义：
+
+```python
+class Dog:
+    species = "Canis familiaris"  # 类属性
+
+    def __init__(self, name):
+        self.name = name
+
+dog1 = Dog("Buddy")
+dog2 = Dog("Max")
+
+print(dog1.species)  # Canis familiaris
+print(dog2.species)  # Canis familiaris
+
+# 修改类属性（通过类名）
+Dog.species = "Canis lupus"
+print(dog1.species)  # Canis lupus
+```
+
+**访问规则：** 实例属性通过 `self` 访问，类属性通过 `类名` 或 `self` 访问。
+
+### 为什么实例能访问类属性
+
+Python 的属性查找是**链式查找**：实例并不是孤立存在的，它和它的类之间通过一条隐式的引用链相连。每个实例对象在创建时都会被自动设置一个特殊属性 `__class__`，指向创建它的类对象，这就是实例找到自己类的"入口"。
+
+```python
+class Dog:
+    species = "Canis familiaris"
+    def __init__(self, name):
+        self.name = name
+
+dog1 = Dog("Buddy")
+print(dog1.__class__)         # <class '__main__.Dog'>
+print(dog1.__class__ is Dog)  # True
+```
+
+当你写 `dog1.species` 时，Python 按下面的顺序查找 `species`：
+
+1. **先查实例的 `__dict__`** —— `dog1.__dict__` 里有没有 `species`？
+2. **找不到时，顺着 `__class__` 跳到类的 `__dict__`** —— `Dog.__dict__` 里有 `species` 吗？
+3. **仍找不到，沿类的 `__mro__`（方法解析顺序）继续向上查父类。**
+
+可用代码验证：实例访问到的类属性和类本身持有的是同一个对象，并非拷贝。
+
+```python
+print(dog1.__dict__)               # {'name': 'Buddy'} —— 实例里没有 species
+print(Dog.__dict__['species'])     # 'Canis familiaris' —— 类里才有
+print(dog1.species is Dog.species) # True —— 同一个对象
+```
+
+#### 这套机制解释了几个常见现象
+
+- **修改类属性后所有实例都"看到"变化**：实例访问的就是类里那一份，类改了，实例再查自然就是新值。前文 `Dog.species = "Canis lupus"` 后 `dog1.species` 也变成 `"Canis lupus"`，正是这个原因。
+- **通过实例赋值会"遮蔽"而非修改类属性**：写 `dog1.species = "xxx"`，会在 `dog1.__dict__` 里新建一个 `species`，此后 `dog1.species` 在实例里就命中了，不再去类里查；但 `dog2.species` 仍指向类的值。这叫"遮蔽"（shadowing）。
+- **类属性是共享的**：所有实例通过查找链访问到的是同一份类属性对象，适合存放所有实例共用的常量。
+
+> **一句话总结：** 实例通过自身的 `__class__` 属性找到它所属的类——这个引用在对象创建时由 `__new__` 自动绑定；属性查找在实例 `__dict__` 中找不到时，就顺着 `__class__`（等价于 `type(实例)`）跳到类的 `__dict__`，再沿 `__mro__` 继续向上。类属性只有一份存在类里，实例访问到的是"借来的"，不是"自己的"。
+
+---
+
+## 实例方法
+
+定义在类中的函数，第一个参数必须是 `self`：
+
+```python
+class Dog:
+    def __init__(self, name):
+        self.name = name
+
+    def bark(self):
+        print(f"{self.name} says: Woof!")
+
+    def introduce(self):
+        self.bark()  # 方法内调用其他方法
+        print(f"My name is {self.name}")
+
+my_dog = Dog("Buddy")
+my_dog.bark()       # Buddy says: Woof!
+my_dog.introduce()  # Buddy says: Woof! My name is Buddy
+```
+
+---
+
+## 类方法与静态方法
+
+### 类方法 `@classmethod`
+
+第一个参数是 `cls`，代表类本身，可以访问或修改类属性：
+
+```python
+class Dog:
+    count = 0  # 类属性：记录创建了多少只狗
+
+    def __init__(self, name):
+        self.name = name
+        Dog.count += 1
+
+    @classmethod
+    def get_count(cls):
+        return cls.count
+
+dog1 = Dog("Buddy")
+dog2 = Dog("Max")
+
+print(Dog.get_count())  # 2
+```
+
+### 静态方法 `@staticmethod`
+
+不接收 `self` 或 `cls`，与普通函数类似，只是组织在类中：
+
+```python
+class MathUtils:
+    @staticmethod
+    def add(a, b):
+        return a + b
+
+    @staticmethod
+    def is_even(n):
+        return n % 2 == 0
+
+print(MathUtils.add(3, 5))      # 8
+print(MathUtils.is_even(4))     # True
+```
+
+**对比：**
+
+| 方法类型 | 装饰器          | 第一个参数 | 访问实例属性 | 访问类属性 |
+| -------- | --------------- | ---------- | ------------ | ---------- |
+| 实例方法 | 无              | `self`     | ✓            | ✓          |
+| 类方法   | `@classmethod`  | `cls`      | ✗            | ✓          |
+| 静态方法 | `@staticmethod` | 无         | ✗            | ✗          |
+
+---
+
+## 继承
+
+子类继承父类的属性和方法，并可以扩展或重写：
+
+```python
+class Animal:
+    def __init__(self, name):
+        self.name = name
+
+    def speak(self):
+        print("Some sound")
+
+class Dog(Animal):  # Dog 继承 Animal
+    def speak(self):  # 重写父类方法
+        print(f"{self.name} says: Woof!")
+
+class Cat(Animal):
+    def speak(self):
+        print(f"{self.name} says: Meow!")
+
+dog = Dog("Buddy")
+cat = Cat("Kitty")
+
+dog.speak()  # Buddy says: Woof!
+cat.speak()  # Kitty says: Meow!
+```
+
+### 调用父类方法
+
+使用 `super()` 调用父类的方法：
+
+```python
+class Animal:
+    def __init__(self, name):
+        self.name = name
+        print("Animal init")
+
+class Dog(Animal):
+    def __init__(self, name, breed):
+        super().__init__(name)  # 调用父类的 __init__
+        self.breed = breed      # 扩展新属性
+        print("Dog init")
+
+dog = Dog("Buddy", "Golden Retriever")
+print(dog.name)   # Buddy
+print(dog.breed)  # Golden Retriever
+```
+
+### 多继承
+
+Python 支持一个子类同时继承多个父类：
+
+```python
+class Flyable:
+    def fly(self):
+        print("I can fly!")
+
+class Swimmable:
+    def swim(self):
+        print("I can swim!")
+
+class Duck(Flyable, Swimmable):  # 同时继承 Flyable 和 Swimmable
+    pass
+
+duck = Duck()
+duck.fly()   # I can fly!
+duck.swim()  # I can swim!
+```
+
+#### 方法解析顺序（MRO）
+
+当多个父类有同名方法时，Python 按照 **MRO**（Method Resolution Order）顺序查找：
+
+```python
+class A:
+    def hello(self):
+        print("Hello from A")
+
+class B(A):
+    def hello(self):
+        print("Hello from B")
+
+class C(A):
+    def hello(self):
+        print("Hello from C")
+
+class D(B, C):  # MRO: D -> B -> C -> A
+    pass
+
+d = D()
+d.hello()  # Hello from B（先找到 B 的方法）
+
+# 查看 MRO 顺序
+print(D.__mro__)
+# (<class 'D'>, <class 'B'>, <class 'C'>, <class 'A'>, <class 'object'>)
+```
+
+#### `super()` 在多继承中的行为
+
+`super()` 按照 MRO 顺序调用**下一个**类的方法，不一定是直接父类：
+
+```python
+class A:
+    def __init__(self):
+        print("A init")
+
+class B(A):
+    def __init__(self):
+        print("B init")
+        super().__init__()  # 调用 C 的 __init__，不是 A
+
+class C(A):
+    def __init__(self):
+        print("C init")
+        super().__init__()  # 调用 A 的 __init__
+
+class D(B, C):
+    def __init__(self):
+        print("D init")
+        super().__init__()  # 调用 B 的 __init__
+
+D()
+# 输出：
+# D init
+# B init
+# C init
+# A init
+```
+
+**注意：** 多继承虽然强大，但过度使用会使代码难以维护。通常优先考虑组合（Composition）代替多继承。
+
+---
+
+## 访问控制
+
+Python 没有严格的私有/公有，但以下划线约定访问权限：
+
+| 命名方式 | 含义             | 访问建议         |
+| -------- | ---------------- | ---------------- |
+| `name`   | 公有             | 可自由访问       |
+| `_name`  | 保护（约定）     | 建议不直接访问   |
+| `__name` | 私有（名称改写） | 外部难以直接访问 |
+
+```python
+class BankAccount:
+    def __init__(self, owner, balance):
+        self.owner = owner          # 公有
+        self._balance = balance     # 保护
+        self.__password = "123456"  # 私有（名称改写为 _BankAccount__password）
+
+    def deposit(self, amount):
+        if amount > 0:
+            self._balance += amount
+
+    def get_balance(self):
+        return self._balance
+
+account = BankAccount("Alice", 1000)
+print(account.owner)      # Alice
+print(account._balance)   # 1000（可以访问，但不建议）
+# print(account.__password)  # AttributeError！
+print(account._BankAccount__password)  # 123456（强行访问）
+```
+
+**注意：** Python 的访问控制基于约定，不是强制。
+
+## 常见操作
+
+### 内置属性
+
+Python 的类和对象有一些内置属性，用于获取元信息：
+
+| 属性        | 说明                     |
+| ----------- | ------------------------ |
+| `__class__` | 对象所属的类             |
+| `__bases__` | 类的所有直接父类（元组） |
+| `__base__`  | 类的第一个直接父类       |
+| `__dict__`  | 对象或类的属性字典       |
+
+```python
+class Animal:
+    pass
+
+class Dog(Animal):
+    species = "Canis familiaris"
+
+    def __init__(self, name):
+        self.name = name
+
+dog = Dog("Buddy")
+
+# __class__: 查看对象所属的类
+print(dog.__class__)        # <class '__main__.Dog'>
+print(dog.__class__.__name__)  # Dog
+
+# __bases__: 查看类的所有直接父类
+print(Dog.__bases__)        # (<class '__main__.Animal'>,)
+
+# __base__: 查看类的第一个直接父类
+print(Dog.__base__)         # <class '__main__.Animal'>
+
+# __dict__: 查看对象的属性字典
+print(dog.__dict__)         # {'name': 'Buddy'}
+
+# __dict__: 查看类的属性字典（包含方法）
+print(Dog.__dict__.keys())  # dict_keys([..., 'species', '__init__', ...])
+```
+
+---
+
+### `type()`
+
+返回对象的类型（对象是通过哪个类创建的）：
+
+```python
+dog = Dog("Buddy")
+
+print(type(dog))       # <class '__main__.Dog'>
+print(type(Dog))       # <class 'type'>
+print(type(123))       # <class 'int'>
+print(type("hello"))   # <class 'str'>
+```
+
+---
+
+### `isinstance()`
+
+判断对象是否是指定类（或其子类）的实例：
+
+```python
+dog = Dog("Buddy")
+
+print(isinstance(dog, Dog))      # True
+print(isinstance(dog, Animal))   # True（Dog 继承 Animal）
+print(isinstance(dog, str))      # False
+
+# 支持元组形式，判断是否为多个类型之一
+print(isinstance(dog, (Dog, Cat)))   # True
+print(isinstance(123, (str, int)))   # True
+```
+
+**与 `type()` 的区别：** `isinstance()` 会考虑继承关系，`type()` 不会。
+
+---
+
+### `issubclass()`
+
+判断一个类是否是另一个类的子类：
+
+```python
+print(issubclass(Dog, Animal))   # True
+print(issubclass(Dog, Dog))      # True（类是自己的子类）
+print(issubclass(Animal, Dog))   # False
+
+# 支持元组
+print(issubclass(Dog, (Animal, str)))  # True
+```
+
+---
+
+### `dir()`
+
+返回对象的所有属性和方法列表（包括继承的）：
+
+```python
+dog = Dog("Buddy")
+
+# 查看对象的所有属性和方法
+print(dir(dog))
+# ['__class__', '__delattr__', ..., 'name', 'species']
+
+# 查看类的所有属性和方法
+print(dir(Dog))
+
+# 不带参数时，返回当前作用域的所有名称
+print(dir())
+```
+
+---
+
+### `vars()`
+
+返回对象的 `__dict__` 属性，即对象的属性字典：
+
+```python
+dog = Dog("Buddy")
+
+print(vars(dog))        # {'name': 'Buddy'}
+print(vars(Dog))        # 类的 __dict__
+print(dog.__dict__)     # 等同于 vars(dog)
+
+# 不带参数时，等同于 locals()
+print(vars())
+```
+
+---
+
+### `getattr()`
+
+获取对象的属性值，属性不存在时可返回默认值。**会沿着继承链查找属性（包括实例属性、类属性、父类属性）：**
+
+```python
+class Animal:
+    species = "Animal"
+
+    def speak(self):
+        return "Some sound"
+
+class Dog(Animal):
+    def __init__(self, name):
+        self.name = name
+
+dog = Dog("Buddy")
+
+# 查找实例属性
+print(getattr(dog, "name"))           # Buddy
+
+# 查找类属性
+print(getattr(dog, "species"))        # Animal（继承自父类）
+
+# 查找父类方法
+print(getattr(dog, "speak")())       # Some sound
+
+# 属性不存在时，提供默认值
+print(getattr(dog, "age", 3))         # 3（默认值）
+
+# 等价于
+dog.name
+dog.species
+dog.speak()
+```
+
+---
+
+### `setattr()`
+
+设置对象的属性值，属性不存在时会创建。**如果父类定义了描述符（如 `@property.setter`）或 `__setattr__` 方法，会遵循继承链上的这些机制：**
+
+```python
+dog = Dog("Buddy")
+
+setattr(dog, "age", 3)
+print(dog.age)            # 3
+
+# 等价于
+dog.age = 3
+
+# 可以动态设置属性名
+attr_name = "breed"
+setattr(dog, attr_name, "Golden Retriever")
+print(dog.breed)          # Golden Retriever
+```
+
+---
+
+### `hasattr()`
+
+判断对象是否有指定属性。**会检查继承链上的所有属性：**
+
+```python
+dog = Dog("Buddy")
+
+# 实例属性
+print(hasattr(dog, "name"))       # True
+
+# 继承的类属性
+print(hasattr(dog, "species"))    # True（继承自 Animal）
+
+# 继承的方法
+print(hasattr(dog, "speak"))      # True（继承自 Animal）
+
+# 不存在的属性
+print(hasattr(dog, "age"))        # False
+
+# 常用于安全地访问属性前进行检查
+if hasattr(dog, "name"):
+    print(dog.name)
+```
+
+---
+
+### `delattr()`
+
+删除对象的属性：
+
+```python
+dog = Dog("Buddy")
+
+# 添加一个属性
+setattr(dog, "age", 3)
+print(dog.age)            # 3
+
+# 删除属性
+delattr(dog, "age")
+# print(dog.age)          # AttributeError!
+
+# 等价于
+del dog.age
+```
+
+---
+
+## 作业
+
+### 一、腾讯面试题
+
+说出下面代码的打印结果
+
+```python
+class Base(object):
+    def __init__(self):
+        print("enter Base")
+        print("leave Base")
+
+class A(Base):
+    def __init__(self):
+        print("enter A")
+        super().__init__()
+        print("leave A")
+
+class B(Base):
+    def __init__(self):
+        print("enter B")
+        super().__init__()
+        print("leave B")
+
+class C(A, B):
+    def __init__(self):
+        print("enter C")
+        super().__init__()
+        print("leave C")
+
+c = C()
+```
+
+### 二、综合预测题
+
+说出下面代码的打印结果
+
+```python
+class Animal:
+    kingdom = "Animalia"
+
+    def __init__(self, name):
+        self.name = name
+
+class Dog(Animal):
+    count = 0
+
+    def __init__(self, name, age):
+        super().__init__(name)
+        self.age = age
+        Dog.count += 1
+
+    def bark(self):
+        return f"{self.name} says Woof!"
+
+dog1 = Dog("Buddy", 3)
+dog2 = Dog("Max", 5)
+
+print(type(dog1))
+print(type(Dog))
+print(isinstance(dog1, Animal))
+print(isinstance(dog1, (int, Dog)))
+print(issubclass(Dog, object))
+print(dog1.__class__.__name__)
+print(Dog.__base__.__name__)
+print(hasattr(dog1, "kingdom"))
+print(getattr(dog1, "age"))
+print(getattr(dog2, "color", "brown"))
+setattr(dog1, "color", "golden")
+print(dog1.color)
+print("bark" in dir(dog1))
+print(vars(dog2))
+delattr(dog1, "color")
+print(hasattr(dog1, "color"))
+print(Dog.count)
+```
+
+### 三、实现链表类
+
+请实现一个单链表类 `LinkedList`，支持以下操作：
+
+**需要实现的方法：**
+
+| 方法                     | 说明                                                                        |
+| ------------------------ | --------------------------------------------------------------------------- |
+| `__init__(data=None)`    | 初始化空链表；`data` 可以是列表、元组或集合，其中的值会被初始化为链表的节点 |
+| `traverse(callback)`     | 遍历链表，对每个节点值调用 `callback(index, value)`                         |
+| `__str__()`              | 返回链表的字符串表示，如 `"1 -> 2 -> 3"`                                    |
+| `to_list()`              | 将链表转换为 Python 列表并返回                                              |
+| `append(value)`          | 在链表尾部添加一个新节点                                                    |
+| `prepend(value)`         | 在链表头部添加一个新节点                                                    |
+| `insert(index, value)`   | 在指定索引位置插入新节点，索引从 0 开始                                     |
+| `delete_by_value(value)` | 删除第一个值等于 `value` 的节点，返回是否删除成功                           |
+| `delete_by_index(index)` | 删除指定索引位置的节点，返回被删除的值，索引越界时返回 `None`               |
+| `find(value)`            | 查找值等于 `value` 的节点，返回其索引，不存在返回 -1                        |
+| `get(index)`             | 获取指定索引位置的值，索引越界时返回 `None`                                 |
+| `get_length()`           | 返回链表长度                                                                |
+| `is_empty()`             | 判断链表是否为空                                                            |
+
+**提示：** 你可能需要先定义一个 `Node` 类来表示链表节点。
+
+---
+
+## 参考答案
+
+> 作业源文件位于 `homework/` 目录，下方通过 Obsidian 嵌入直接展示代码。
+
+```python
+# 第一题：腾讯面试题
+# 题目：说出下面代码的打印结果
+
+
+class Base(object):
+    def __init__(self):
+        print("enter Base")
+        print("leave Base")
+
+
+class A(Base):
+    def __init__(self):
+        print("enter A")
+        super().__init__()
+        print("leave A")
+
+
+class B(Base):
+    def __init__(self):
+        print("enter B")
+        super().__init__()
+        print("leave B")
+
+
+class C(A, B):
+    def __init__(self):
+        print("enter C")
+        super().__init__()
+        print("leave C")
+
+
+c = C()
+
+# 打印结果：
+# enter C
+# enter A
+# enter B
+# enter Base
+# leave Base
+# leave B
+# leave A
+# leave C
+```
+
+```python
+# 第二题：综合预测题
+# 题目：说出下面代码的打印结果
+
+
+class Animal:
+    kingdom = "Animalia"
+
+    def __init__(self, name):
+        self.name = name
+
+
+class Dog(Animal):
+    count = 0
+
+    def __init__(self, name, age):
+        super().__init__(name)
+        self.age = age
+        Dog.count += 1
+
+    def bark(self):
+        return f"{self.name} says Woof!"
+
+
+dog1 = Dog("Buddy", 3)
+dog2 = Dog("Max", 5)
+
+print(type(dog1))
+print(type(Dog))
+print(isinstance(dog1, Animal))
+print(isinstance(dog1, (int, Dog)))
+print(issubclass(Dog, object))
+print(dog1.__class__.__name__)
+print(Dog.__base__.__name__)
+print(hasattr(dog1, "kingdom"))
+print(getattr(dog1, "age"))
+print(getattr(dog2, "color", "brown"))
+setattr(dog1, "color", "golden")
+print(dog1.color)
+print("bark" in dir(dog1))
+print(vars(dog2))
+delattr(dog1, "color")
+print(hasattr(dog1, "color"))
+print(Dog.count)
+
+# 打印结果：
+# <class '__main__.Dog'>
+# <class 'type'>
+# True
+# True
+# True
+# Dog
+# Animal
+# True
+# 3
+# brown
+# golden
+# True
+# {'name': 'Max', 'age': 5}
+# False
+# 2
+```
+
+```python
+# 第三题：实现链表类
+
+
+class Node:
+    """链表节点"""
+
+    def __init__(self, value):
+        self.value = value
+        self.next = None
+
+
+class LinkedList:
+    """单链表"""
+
+    def __init__(self, data=None):
+        self.head = None
+        self._length = 0
+
+        if data is not None:
+            # 支持列表、元组、集合等可迭代对象
+            for value in data:
+                self.append(value)
+
+    def traverse(self, callback):
+        """遍历链表，对每个节点值调用 callback(index, value)"""
+        current = self.head
+        index = 0
+        while current is not None:
+            callback(index, current.value)
+            current = current.next
+            index += 1
+
+    def append(self, value):
+        """在链表尾部添加一个新节点"""
+        new_node = Node(value)
+
+        if self.head is None:
+            self.head = new_node
+        else:
+            current = self.head
+            while current.next is not None:
+                current = current.next
+            current.next = new_node
+
+        self._length += 1
+
+    def prepend(self, value):
+        """在链表头部添加一个新节点"""
+        new_node = Node(value)
+        new_node.next = self.head
+        self.head = new_node
+        self._length += 1
+
+    def insert(self, index, value):
+        """在指定索引位置插入新节点，索引从 0 开始"""
+        if index < 0 or index > self._length:
+            return
+
+        if index == 0:
+            self.prepend(value)
+            return
+
+        new_node = Node(value)
+        current = self.head
+
+        i = 0
+        while i < index - 1:
+            current = current.next
+            i += 1
+
+        new_node.next = current.next
+        current.next = new_node
+        self._length += 1
+
+    def delete_by_value(self, value):
+        """删除第一个值等于 value 的节点，返回是否删除成功"""
+        if self.head is None:
+            return False
+
+        if self.head.value == value:
+            self.head = self.head.next
+            self._length -= 1
+            return True
+
+        current = self.head
+        while current.next is not None:
+            if current.next.value == value:
+                current.next = current.next.next
+                self._length -= 1
+                return True
+            current = current.next
+
+        return False
+
+    def delete_by_index(self, index):
+        """删除指定索引位置的节点，返回被删除的值，索引越界时返回 None"""
+        if index < 0 or index >= self._length:
+            return None
+
+        if index == 0:
+            value = self.head.value
+            self.head = self.head.next
+            self._length -= 1
+            return value
+
+        current = self.head
+        i = 0
+        while i < index - 1:
+            current = current.next
+            i += 1
+
+        value = current.next.value
+        current.next = current.next.next
+        self._length -= 1
+        return value
+
+    def find(self, value):
+        """查找值等于 value 的节点，返回其索引，不存在返回 -1"""
+        current = self.head
+        index = 0
+
+        while current is not None:
+            if current.value == value:
+                return index
+            current = current.next
+            index += 1
+
+        return -1
+
+    def get(self, index):
+        """获取指定索引位置的值，索引越界时返回 None"""
+        if index < 0 or index >= self._length:
+            return None
+
+        current = self.head
+        i = 0
+        while i < index:
+            current = current.next
+            i += 1
+
+        return current.value
+
+    def get_length(self):
+        """返回链表长度"""
+        return self._length
+
+    def is_empty(self):
+        """判断链表是否为空"""
+        return self._length == 0
+
+    def to_list(self):
+        """将链表转换为 Python 列表并返回"""
+        result = []
+        current = self.head
+        while current is not None:
+            result.append(current.value)
+            current = current.next
+        return result
+
+    def __str__(self):
+        """返回链表的字符串表示，如 '1 -> 2 -> 3'"""
+        values = self.to_list()
+        return " -> ".join(str(value) for value in values)
+
+
+# ============ 测试代码 ============
+
+# 1. 测试从列表初始化
+ll = LinkedList([1, 2, 3])
+print("初始化链表:", ll)  # 1 -> 2 -> 3
+
+# 2. 测试 append
+ll.append(4)
+print("append(4)后:", ll)  # 1 -> 2 -> 3 -> 4
+
+# 3. 测试 prepend
+ll.prepend(0)
+print("prepend(0)后:", ll)  # 0 -> 1 -> 2 -> 3 -> 4
+
+# 4. 测试 insert
+ll.insert(2, 99)
+print("insert(2, 99)后:", ll)  # 0 -> 1 -> 99 -> 2 -> 3 -> 4
+
+# 5. 测试 get
+print("get(0):", ll.get(0))  # 0
+print("get(3):", ll.get(3))  # 2
+print("get(100):", ll.get(100))  # None
+
+# 6. 测试 find
+print("find(99):", ll.find(99))  # 2
+print("find(100):", ll.find(100))  # -1
+
+# 7. 测试 get_length
+print("长度:", ll.get_length())  # 6
+
+# 8. 测试 is_empty
+print("是否为空:", ll.is_empty())  # False
+
+# 9. 测试 to_list
+print("转列表:", ll.to_list())  # [0, 1, 99, 2, 3, 4]
+
+# 10. 测试 traverse
+result = []
+ll.traverse(lambda i, v: result.append((i, v)))
+print("遍历结果:", result)  # [(0, 0), (1, 1), (2, 99), (3, 2), (4, 3), (5, 4)]
+
+# 11. 测试 delete_by_value
+success = ll.delete_by_value(99)
+print("delete_by_value(99):", success, ll)  # True, 0 -> 1 -> 2 -> 3 -> 4
+
+# 12. 测试 delete_by_index
+deleted = ll.delete_by_index(0)
+print("delete_by_index(0):", deleted, ll)  # 0, 1 -> 2 -> 3 -> 4
+
+# 13. 测试空链表
+empty = LinkedList()
+print("空链表:", empty)  # (空字符串)
+print("空链表长度:", empty.get_length())  # 0
+print("空链表是否为空:", empty.is_empty())  # True
+```

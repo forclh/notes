@@ -1,4 +1,5 @@
 ---
+permalink: python/hso1id
 chapter: 03
 title: Python基本语法
 course: Python语言核心精讲

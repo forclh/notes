@@ -1,4 +1,5 @@
 ---
+permalink: python/61ekzd
 chapter: 19
 title: ABC（抽象类）
 course: Python语言核心精讲

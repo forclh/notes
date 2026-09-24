@@ -1,0 +1,216 @@
+---
+chapter: 10
+title: 对象的创建过程
+course: Python语言核心精讲
+tags:
+  - python
+  - 课件
+  - 类
+  - 对象
+  - __new__
+  - __init__
+  - 单例模式
+  - 元类
+---
+
+# 对象的创建过程
+
+## 对象创建的伪代码
+
+当我们写 `Person("shae", 5)` 时，Python 实际上做了下面三件事：
+
+```python
+def create_object(cls, *args, **kwargs):
+    # 1. 调用 __new__ 创建实例
+    obj = cls.__new__(cls, *args, **kwargs)
+
+    # 2. 类型检查：只有 obj 是 cls 的实例（或其子类的实例）时才调用 __init__
+    if isinstance(obj, cls):
+        obj.__init__(*args, **kwargs)
+
+    # 3. 返回对象
+    return obj
+
+
+# 测试
+class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def sayHi(self):
+        print(f"my name is {self.name}, I'm {self.age} years old")
+
+p = create_object(Person, "shae", 5)
+p.sayHi()
+```
+
+**关键点：**
+
+- `__new__` 负责创建并返回实例对象，是**类方法**（即使不写 `@classmethod` 装饰）。
+- `__init__` 负责初始化实例属性，**不会返回任何值**。
+- 只有当 `__new__` 返回的对象是当前类（或其子类）的实例时，`__init__` 才会被调用。
+- 若 `__new__` 返回了其它类型的对象，`__init__` **不会**被执行。
+
+---
+
+## 应用场景
+
+理解对象的创建过程后，我们可以通过重写 `__new__` 和 `__init__` 来实现多种设计模式。
+
+### 1. 单例模式
+
+确保一个类只有一个实例：
+
+```python
+class Database:
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+# 测试
+conn1 = Database()
+conn2 = Database()
+print(conn1 is conn2)  # True，说明是同一个实例
+```
+
+### 2. 对象池/缓存
+
+复用已有对象，避免重复创建：
+
+```python
+class ConnectionPool:
+    _pool = {}
+
+    def __new__(cls, conn_id):
+        if conn_id not in cls._pool:
+            obj = super().__new__(cls)
+            cls._pool[conn_id] = obj
+        return cls._pool[conn_id]
+
+# 测试
+pool1 = ConnectionPool("conn_1")
+pool2 = ConnectionPool("conn_1")
+pool3 = ConnectionPool("conn_2")
+print(pool1 is pool2)  # True，相同 conn_id 返回同一个对象
+print(pool1 is pool3)  # False，不同 conn_id 返回不同对象
+```
+
+### 3. 正整数（带默认值回退）
+
+`__new__` 可以返回不同类型的对象。当返回的对象不是当前类的实例时，`__init__` 不会被执行：
+
+```python
+class PositiveInt:
+    def __new__(cls, value):
+        if value < 0:
+            return 0  # 返回 int 类型的 0，不是 PositiveInt 的实例
+        return super().__new__(cls)
+
+    def __init__(self, value):
+        print("PositiveInt.__init__ 被调用")
+        self.value = value
+
+# 测试
+p = PositiveInt(5)
+print(type(p))    # <class '__main__.PositiveInt'>
+print(p.value)    # 5
+
+n = PositiveInt(-3)
+print(type(n))    # <class 'int'>
+print(n)          # 0
+```
+
+---
+
+## 作业
+
+### 一、实现单例模式
+
+参照「应用场景 → 1. 单例模式」，自己写一遍单例模式的实现，并思考：
+
+- 为什么 `__new__` 中要用 `super().__new__(cls)` 而不是 `cls()`？
+- 当多次调用 `Database()` 时，`__init__` 会被调用几次？如何避免重复初始化？
+
+### 思考题解答
+
+**1. 为什么 `__new__` 中要用 `super().__new__(cls)` 而不是 `cls()`？**
+
+`cls()` 等价于"再次调用 `Database()`"，会触发完整的对象创建流程——即再次调用 `Database.__new__`，从而形成**无限递归**：
+
+而 `super().__new__(cls)` 做的是另一件事：它绕过当前类自定义的 `__new__`，直接委托给父类（最终是 `object`）去完成**真正分配内存、创建实例**的工作。`object.__new__(cls)` 是底层实现，不会再回头调 `Database.__new__`，因此不会递归。
+
+一句话总结：`__new__` 的职责是"创建实例"，而创建实例这件底层动作必须交给父类/`object` 来做，自己只负责"是否复用已有实例"这一层判断。所以本类里写 `cls()` 是把"创建"这件事又抛回给自己，必然死循环。
+
+**2. 当多次调用 `Database()` 时，`__init__` 会被调用几次？如何避免重复初始化？**
+
+**会被调用多次。** 即便 `__new__` 已经复用了同一个实例，伪代码中这一步依然会执行：
+
+```python
+if isinstance(obj, cls):
+    obj.__init__(*args, **kwargs)
+```
+
+因为 `__new__` 返回的还是 `Database` 的实例，`isinstance` 判定为真，于是每次 `Database()` 都会再跑一次 `__init__`。单例模式只保证了"对象只有一个"，并没有保证"初始化只发生一次"。
+
+避免重复初始化的写法：用一个类属性做"已初始化"标志。
+
+```python
+class Database:
+    _instance = None
+    _initialized = False
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def __init__(self):
+        if self._initialized:
+            return
+        self._initialized = True
+        # 真正的初始化逻辑放在这里
+        print("init once")
+```
+
+实际工程中这种写法更常用，因为符合"`__new__` 造对象、`__init__` 初始化属性"的分工；但要注意 `__init__` 在单例场景下天然会被重复调用，必须靠标志位或检查来幂等化。
+
+---
+
+## 参考答案
+
+> 作业源文件位于 `homework/` 目录，下方通过 Obsidian 嵌入直接展示代码。
+
+```python
+# 作业一答案：单例模式
+# 通过重写 __new__，确保一个类只存在一个实例
+
+
+class Database:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def __init__(self, dsn="default"):
+        # __new__ 返回已存在的实例时，__init__ 仍会被调用
+        # 如需避免重复初始化，可增加初始化守卫
+        if getattr(self, "_initialized", False):
+            return
+        self.dsn = dsn
+        self._initialized = True
+
+
+# 测试
+conn1 = Database("prod")
+conn2 = Database("dev")
+
+print(conn1 is conn2)  # True，说明是同一个实例
+print(conn1.dsn)  # prod，第一次初始化的值被保留
+print(conn2.dsn)  # prod
+```
