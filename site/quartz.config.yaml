@@ -7,7 +7,7 @@ configuration:
   analytics:
     provider: plausible
   locale: zh-CN
-  baseUrl: notes.pages.dev
+  baseUrl: notes.forclh.workers.dev
   ignorePatterns:
     - private
     - templates
