@@ -101,19 +101,27 @@ const copyDir = (src, dest) => {
   }
 };
 
-/** [[原名]] / [[原名|显示]] / [[原名#标题]] / [[原名#标题|显示]] → 短码路径（含表格转义 \|） */
+/** [[原名]] / [[原名|显示]] / [[原名#标题]] / [[原名#标题|显示]] → 短码路径
+ *  无显式显示名时保留原文件名作为显示文本；表格行内竖线需转义为 \| */
 const rewriteWikiLinks = (text) =>
-  text.replace(/\[\[([^\[\]]+)\]\]/g, (whole, inner) => {
-    const pipeAt = inner.search(/\||\\\|/);
-    const target = pipeAt === -1 ? inner : inner.slice(0, pipeAt);
-    const rest = pipeAt === -1 ? "" : inner.slice(pipeAt);
-    const hashAt = target.indexOf("#");
-    const page = hashAt === -1 ? target : target.slice(0, hashAt);
-    const anchor = hashAt === -1 ? "" : target.slice(hashAt);
-    const code = nameMap.get(page.trim());
-    if (!code) return whole; // 非页面链接（.py 嵌入残留等）保持原样
-    return `[[${code}${anchor}${rest}]]`;
-  });
+  text
+    .split("\n")
+    .map((line) => {
+      const sep = line.trimStart().startsWith("|") ? "\\|" : "|";
+      return line.replace(/\[\[([^\[\]]+)\]\]/g, (whole, inner) => {
+        const pipeAt = inner.search(/\||\\\|/);
+        const target = pipeAt === -1 ? inner : inner.slice(0, pipeAt);
+        const rest = pipeAt === -1 ? "" : inner.slice(pipeAt);
+        const hashAt = target.indexOf("#");
+        const page = hashAt === -1 ? target : target.slice(0, hashAt);
+        const anchor = hashAt === -1 ? "" : target.slice(hashAt);
+        const code = nameMap.get(page.trim());
+        if (!code) return whole; // 非页面链接（页内锚点、.py 嵌入残留等）保持原样
+        const display = rest || `${sep}${inner}`;
+        return `[[${code}${anchor}${display}]]`;
+      });
+    })
+    .join("\n");
 
 // ---------- 第 3 步：生成内容（短码命名 + 嵌入转换 + 双链重写） ----------
 let embedded = 0;

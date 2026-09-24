@@ -11,26 +11,26 @@ title: AK's Notes
 | 章节 | 笔记                                              | 主题                                                                                               |
 | ---- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | 00   | [[python/mv8kys\|Python语言核心精讲]] | 索引页（本页）                                                                                     |
-| 01   | [[python/xhvgor]]                                   | 导言                                                                                               |
-| 02   | [[python/btp2r2]]                             | 环境搭建、pyenv、VSCode                                                                            |
-| 03   | [[python/hso1id]]                             | 类型、运算符、流程控制                                                                             |
-| 04   | [[python/brehox]]                                   | list / tuple / dict / set                                                                          |
-| 05   | [[python/eiv7ma]]                                       | 参数、返回值、文档字符串                                                                           |
-| 06   | [[python/sqxuzh]]                                     | LEGB、global、nonlocal、闭包                                                                       |
-| 07   | [[python/ahnrca]]                               | lambda、高阶函数、sorted/map/filter/reduce                                                         |
-| 08   | [[python/5dnblh]]                                   | 类定义、`__init__`、实例/类属性、方法、继承、MRO、访问控制、`type`/`isinstance`/`getattr` 等       |
-| 09   | [[python/um0a7x]]                                 | `type()` 动态建类、MRO、私有成员、对象/类/`type`/`object`/`function` 关系、成员查找顺序            |
-| 10   | [[python/7oswdx]]                             | `__new__` / `__init__` 协作、单例模式、对象池、返回不同类型对象                                    |
-| 11   | [[python/kprsds]]                                 | `callable()`、`__call__`、可配置函数对象、状态保持回调                                             |
-| 12   | [[python/ghxdnw]]                                       | `type` 与 `class` 语法糖、自定义元类、元类查找顺序、元类三钩子                                     |
-| 13   | [[python/5vranh]]                                     | 装饰器语法、functools.wraps                                                                        |
-| 14   | [[python/cwcw2e]]                                   | `__str__`/`__repr__`、比较、算术、容器协议、类型转换、属性拦截、`__del__`                          |
-| 15   | [[python/lntcgo]]                                     | 描述符协议、数据/非数据描述符、访问顺序、`__set_name__`、`@property` 原理、惰性计算/类型检查       |
-| 16   | [[python/pmkda5]]                                   | `try`/`except`/`else`/`finally`、异常层次结构、`raise`、自定义异常、异常链                         |
-| 17   | [[python/mibocn]]                             | 迭代器协议、可迭代对象、消费者、`range`、推导式、生成器与 `yield`、`yield from`、`send`、itertools |
-| 18   | [[python/lmjdlx]]                               | `with` 执行流程、`__enter__`/`__exit__`、异常抑制、`@contextmanager`、多上下文管理器               |
-| 19   | [[python/61ekzd]]                                        | 抽象类、`@abstractmethod`、抽象属性、接口约束、插件/数据源应用场景                                 |
-| 20   | [[python/m8duna]]                                   | 变量/函数标注、`Optional`/`Union`、容器类型、`Self`、泛型、`Callable`、`TypedDict`、`type: ignore` |
+| 01   | [[python/xhvgor\|01-必看导言]]                                   | 导言                                                                                               |
+| 02   | [[python/btp2r2\|02-Python环境安装]]                             | 环境搭建、pyenv、VSCode                                                                            |
+| 03   | [[python/hso1id\|03-Python基本语法]]                             | 类型、运算符、流程控制                                                                             |
+| 04   | [[python/brehox\|04-容器类型]]                                   | list / tuple / dict / set                                                                          |
+| 05   | [[python/eiv7ma\|05-函数]]                                       | 参数、返回值、文档字符串                                                                           |
+| 06   | [[python/sqxuzh\|06-作用域]]                                     | LEGB、global、nonlocal、闭包                                                                       |
+| 07   | [[python/ahnrca\|07-lambda表达式]]                               | lambda、高阶函数、sorted/map/filter/reduce                                                         |
+| 08   | [[python/5dnblh\|08-类和对象]]                                   | 类定义、`__init__`、实例/类属性、方法、继承、MRO、访问控制、`type`/`isinstance`/`getattr` 等       |
+| 09   | [[python/um0a7x\|09-对象的类型]]                                 | `type()` 动态建类、MRO、私有成员、对象/类/`type`/`object`/`function` 关系、成员查找顺序            |
+| 10   | [[python/7oswdx\|10-对象的创建过程]]                             | `__new__` / `__init__` 协作、单例模式、对象池、返回不同类型对象                                    |
+| 11   | [[python/kprsds\|11-可调用对象]]                                 | `callable()`、`__call__`、可配置函数对象、状态保持回调                                             |
+| 12   | [[python/ghxdnw\|12-元类]]                                       | `type` 与 `class` 语法糖、自定义元类、元类查找顺序、元类三钩子                                     |
+| 13   | [[python/5vranh\|13-装饰器]]                                     | 装饰器语法、functools.wraps                                                                        |
+| 14   | [[python/cwcw2e\|14-魔术方法]]                                   | `__str__`/`__repr__`、比较、算术、容器协议、类型转换、属性拦截、`__del__`                          |
+| 15   | [[python/lntcgo\|15-描述符]]                                     | 描述符协议、数据/非数据描述符、访问顺序、`__set_name__`、`@property` 原理、惰性计算/类型检查       |
+| 16   | [[python/pmkda5\|16-异常处理]]                                   | `try`/`except`/`else`/`finally`、异常层次结构、`raise`、自定义异常、异常链                         |
+| 17   | [[python/mibocn\|17-迭代器与生成器]]                             | 迭代器协议、可迭代对象、消费者、`range`、推导式、生成器与 `yield`、`yield from`、`send`、itertools |
+| 18   | [[python/lmjdlx\|18-上下文管理器]]                               | `with` 执行流程、`__enter__`/`__exit__`、异常抑制、`@contextmanager`、多上下文管理器               |
+| 19   | [[python/61ekzd\|19-ABC]]                                        | 抽象类、`@abstractmethod`、抽象属性、接口约束、插件/数据源应用场景                                 |
+| 20   | [[python/m8duna\|20-类型标注]]                                   | 变量/函数标注、`Optional`/`Union`、容器类型、`Self`、泛型、`Callable`、`TypedDict`、`type: ignore` |
 
 ## 按标签浏览
 
