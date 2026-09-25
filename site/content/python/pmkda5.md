@@ -1,7 +1,6 @@
 ---
 chapter: 16
 title: 16 异常处理
-course: Python语言核心精讲
 tags:
   - python
   - 课件

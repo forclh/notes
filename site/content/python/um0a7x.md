@@ -1,7 +1,6 @@
 ---
 chapter: 09
 title: 09 对象的类型
-course: Python语言核心精讲
 tags:
   - python
   - 课件

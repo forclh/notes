@@ -1,7 +1,6 @@
 ---
 chapter: 13
 title: 13 装饰器
-course: Python语言核心精讲
 tags:
   - python
   - 课件

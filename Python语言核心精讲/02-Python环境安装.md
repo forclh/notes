@@ -2,7 +2,6 @@
 permalink: python/btp2r2
 chapter: 02
 title: Python环境安装
-course: Python语言核心精讲
 tags:
   - python
   - 课件

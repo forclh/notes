@@ -1,7 +1,6 @@
 ---
 chapter: 04
 title: 04 容器类型
-course: Python语言核心精讲
 tags:
   - python
   - 课件

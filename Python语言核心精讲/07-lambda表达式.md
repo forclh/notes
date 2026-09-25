@@ -2,7 +2,6 @@
 permalink: python/ahnrca
 chapter: 07
 title: lambda表达式
-course: Python语言核心精讲
 tags:
   - python
   - 课件

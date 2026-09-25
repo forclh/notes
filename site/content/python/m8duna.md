@@ -1,7 +1,6 @@
 ---
 chapter: 20
 title: 20 类型标注
-course: Python语言核心精讲
 tags:
   - python
   - 课件

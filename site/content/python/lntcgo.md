@@ -1,7 +1,6 @@
 ---
 chapter: 15
 title: 15 描述符
-course: Python语言核心精讲
 tags:
   - python
   - 课件

@@ -1,7 +1,6 @@
 ---
 chapter: 08
 title: 08 类和对象
-course: Python语言核心精讲
 tags:
   - python
   - 课件

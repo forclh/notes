@@ -1,7 +1,6 @@
 ---
 chapter: 14
 title: 14 魔术方法
-course: Python语言核心精讲
 tags:
   - python
   - 课件

@@ -1,7 +1,6 @@
 ---
 chapter: 11
 title: 11 可调用对象
-course: Python语言核心精讲
 tags:
   - python
   - 课件

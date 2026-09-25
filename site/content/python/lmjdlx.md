@@ -1,7 +1,6 @@
 ---
 chapter: 18
 title: 18 上下文管理器
-course: Python语言核心精讲
 tags:
   - python
   - 课件

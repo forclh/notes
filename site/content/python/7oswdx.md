@@ -1,7 +1,6 @@
 ---
 chapter: 10
 title: 10 对象的创建过程
-course: Python语言核心精讲
 tags:
   - python
   - 课件

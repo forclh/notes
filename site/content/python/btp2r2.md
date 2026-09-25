@@ -1,7 +1,6 @@
 ---
 chapter: 02
 title: 02 Python环境安装
-course: Python语言核心精讲
 tags:
   - python
   - 课件

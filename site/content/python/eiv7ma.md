@@ -1,7 +1,6 @@
 ---
 chapter: 05
 title: 05 函数
-course: Python语言核心精讲
 tags:
   - python
   - 课件

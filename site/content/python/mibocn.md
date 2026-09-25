@@ -1,7 +1,6 @@
 ---
 chapter: 17
 title: 17 迭代器与生成器
-course: Python语言核心精讲
 tags:
   - python
   - 课件

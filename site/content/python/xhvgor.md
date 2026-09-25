@@ -1,7 +1,6 @@
 ---
 chapter: 01
 title: 01 必看导言
-course: Python语言核心精讲
 tags:
   - python
   - 课件

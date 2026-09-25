@@ -1,7 +1,6 @@
 ---
 chapter: 12
 title: 12 元类
-course: Python语言核心精讲
 tags:
   - python
   - 课件

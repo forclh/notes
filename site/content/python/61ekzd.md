@@ -1,7 +1,6 @@
 ---
 chapter: 19
 title: 19 ABC（抽象类）
-course: Python语言核心精讲
 tags:
   - python
   - 课件

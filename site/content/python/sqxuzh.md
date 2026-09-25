@@ -1,7 +1,6 @@
 ---
 chapter: 06
 title: 06 作用域
-course: Python语言核心精讲
 tags:
   - python
   - 课件

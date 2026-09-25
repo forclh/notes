@@ -1,7 +1,6 @@
 ---
 chapter: 03
 title: 03 Python基本语法
-course: Python语言核心精讲
 tags:
   - python
   - 课件
