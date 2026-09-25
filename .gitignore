@@ -23,6 +23,10 @@ __pycache__/
 .venv/
 venv/
 
+# Quartz 构建产物与缓存（部署由 Cloudflare 从仓库自动构建，产物不入库）
+site/public/
+.quartz-cache/
+
 # Node
 node_modules/
 
