@@ -214,6 +214,8 @@ a, b = 3, 5
 print(f"{a} + {b} = {a + b}")       # 3 + 5 = 8
 ```
 
+> Python 3.12（PEP 701）起，f-string 内部可以使用与外层相同的引号、支持换行和反斜杠。例如 `f"{d["key"]}"` 在旧版本会报错，现在直接合法。
+
 ## 运算符
 
 ### 算术运算符
@@ -511,6 +513,29 @@ result = "通过" if score >= 60 else "不及格"
 ```
 
 **注意：** Python使用缩进（通常为4个空格）表示代码块，不使用花括号。
+
+### match-case（结构化模式匹配）
+
+Python 3.10+ 引入 `match` 语句，按模式匹配值，比长串 `if-elif` 更清晰：
+
+```python
+def handle(command: str) -> None:
+    match command.split():
+        case ["hello", name]:
+            print(f"你好, {name}")
+        case ["bye"]:
+            print("再见")
+        case _:
+            print("未知命令")
+
+
+handle("hello Alice")  # 你好, Alice
+handle("bye")          # 再见
+handle("abc")          # 未知命令
+```
+
+- `case _` 相当于 `else`，匹配任意值
+- 模式除了字面量，还支持序列解包、捕获变量、类模式等，比其他语言的 `switch` 强大得多
 
 ### pass占位符
 

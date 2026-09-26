@@ -187,6 +187,10 @@ for name, age in zip(names, ages):
 # Bob: 30
 # Charlie: 35
 
+# Python 3.10+：strict=True 在两边长度不一致时抛 ValueError，便于及早发现数据问题
+# for name, age in zip(names, ages, strict=True):
+#     print(f"{name}: {age}")
+
 # map 对元素进行转换
 squares = map(lambda x: x**2, Countdown(3))
 print(list(squares))  # [9, 4, 1, 0]
@@ -502,6 +506,10 @@ print(perms)  # [(1, 2), (1, 3), (2, 1), (2, 3), (3, 1), (3, 2)]
 # combinations(iterable, r)：组合
 combs = list(itertools.combinations([1, 2, 3, 4], 2))
 print(combs)  # [(1, 2), (1, 3), (1, 4), (2, 3), (2, 4), (3, 4)]
+
+# batched(iterable, n)（Python 3.12+）：把元素按固定长度分批
+batches = list(itertools.batched([1, 2, 3, 4, 5], 2))
+print(batches)  # [(1, 2), (3, 4), (5,)]
 ```
 
 ---

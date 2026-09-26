@@ -7,7 +7,6 @@ tags:
   - 类型标注
   - typing
   - 泛型
-  - TypeVar
   - TypedDict
   - Callable
 ---
@@ -77,22 +76,19 @@ def exit_program() -> NoReturn:
 
 ## 常用复合类型
 
-### Optional 和 Union
+### 联合类型和 None
 
 ```python
-from typing import Optional, Union
-
-
-# Optional：值可以是某个类型，也可以是 None
-def find_user(user_id: int) -> Optional[str]:
+# 值可以是某个类型，也可以是 None
+def find_user(user_id: int) -> str | None:
     """返回用户名，找不到时返回 None"""
     if user_id <= 0:
         return None
     return f"User_{user_id}"
 
 
-# Union：值可以是多种类型之一
-def parse_value(value: str) -> Union[int, float, str]:
+# 值可以是多种类型之一
+def parse_value(value: str) -> int | float | str:
     """尝试将字符串转换为数字，失败则返回原字符串"""
     try:
         if "." in value:
@@ -102,37 +98,38 @@ def parse_value(value: str) -> Union[int, float, str]:
         return value
 ```
 
+> 用 `|` 组合出来的类型叫「联合类型」；`X | None` 表示该值也可能是 `None`，是类型标注里最常见的联合类型。
+
 ### 容器类型
 
 ```python
-from typing import List, Dict, Tuple, Set
-
-
 # 列表：元素类型
-scores: List[int] = [85, 90, 78]
-names: List[str] = ["Alice", "Bob", "Charlie"]
+scores: list[int] = [85, 90, 78]
+names: list[str] = ["Alice", "Bob", "Charlie"]
 
 
 # 字典：键类型, 值类型
-student_scores: Dict[str, int] = {
+student_scores: dict[str, int] = {
     "Alice": 85,
     "Bob": 90,
 }
 
 
 # 元组：固定长度，每个位置类型可不同
-point: Tuple[int, int] = (10, 20)
-person: Tuple[str, int, bool] = ("Alice", 25, True)
+point: tuple[int, int] = (10, 20)
+person: tuple[str, int, bool] = ("Alice", 25, True)
 
 
 # 集合：元素类型
-tags: Set[str] = {"python", "typing", "type-hints"}
+tags: set[str] = {"python", "typing", "type-hints"}
 ```
+
+> 内置容器类型直接支持下标写法，无需从 `typing` 导入任何东西。
 
 ### Any 和类型别名
 
 ```python
-from typing import Any, TypeAlias
+from typing import Any
 
 
 # Any：任意类型，相当于没有类型约束
@@ -140,15 +137,17 @@ def log_data(data: Any) -> None:
     print(f"数据: {data}")
 
 
-# 类型别名，让复杂类型更易读
-Vector: TypeAlias = List[float]
-Matrix: TypeAlias = List[List[float]]
+# 类型别名，让复杂类型更易读（Python 3.12+ 的 type 语句）
+type Vector = list[float]
+type Matrix = list[list[float]]
 
 
 def dot_product(v1: Vector, v2: Vector) -> float:
     """计算两个向量的点积"""
     return sum(a * b for a, b in zip(v1, v2))
 ```
+
+> `type` 语句定义的别名还支持类型参数，例如 `type Pair[T] = tuple[T, T]`。
 
 ## 类与自定义类型
 
@@ -181,13 +180,8 @@ print(p1.distance_to(p2))  # 5.0
 ## 泛型
 
 ```python
-from typing import TypeVar, Generic
-
-
-T = TypeVar("T")
-
-
-class Stack(Generic[T]):
+# 类型参数直接写在类名后（Python 3.12+）
+class Stack[T]:
     """泛型栈，可以存储任意类型的元素"""
 
     def __init__(self) -> None:
@@ -216,12 +210,17 @@ print(int_stack.pop())  # 2
 str_stack: Stack[str] = Stack()
 str_stack.push("hello")
 # str_stack.push(123)  # 类型检查会警告
+
+
+# 函数同样支持类型参数
+def first[T](items: list[T]) -> T:
+    return items[0]
 ```
 
 ## Callable 和回调函数
 
 ```python
-from typing import Callable
+from collections.abc import Callable
 
 
 def execute_callback(
@@ -238,7 +237,7 @@ result = execute_callback(lambda x, y: x + y, 3, 5)
 print(result)  # 8
 ```
 
-> `Callable[[参数类型列表], 返回类型]`，例如 `Callable[[int, int], int]` 表示接收两个 `int`、返回 `int` 的可调用对象。
+> `Callable[[参数类型列表], 返回类型]`，例如 `Callable[[int, int], int]` 表示接收两个 `int`、返回 `int` 的可调用对象。从 `collections.abc` 导入是当前的标准做法。
 
 ## 应用场景
 
@@ -336,13 +335,7 @@ def get_grade(score):
 ### 二、实现泛型缓存
 
 ```python
-from typing import TypeVar, Generic, Optional
-
-K = TypeVar("K")
-V = TypeVar("V")
-
-
-class Cache(Generic[K, V]):
+class Cache[K, V]:
     """泛型缓存类"""
 
     def __init__(self) -> None:
@@ -354,7 +347,7 @@ class Cache(Generic[K, V]):
         # 你的代码
         pass
 
-    def get(self, key: K) -> Optional[V]:
+    def get(self, key: K) -> V | None:
         """获取缓存，不存在返回 None"""
         # 你的代码
         pass
@@ -379,7 +372,7 @@ cache.clear()
 使用 `TypedDict` 定义应用配置结构：
 
 ```python
-from typing import TypedDict, Optional
+from typing import TypedDict
 
 
 class DatabaseConfig(TypedDict):
@@ -412,10 +405,7 @@ def load_config() -> AppConfig:
 下面代码的类型标注是否正确？如果不正确，如何修改？
 
 ```python
-from typing import List, Dict
-
-
-def process_data(items: List) -> Dict:
+def process_data(items: list) -> dict:
     """处理数据项"""
     result = {}
     for item in items:
@@ -465,23 +455,17 @@ print(get_grade(59))  # F
 ```
 
 ```python
-from typing import Dict, Generic, Optional, TypeVar
-
-K = TypeVar("K")
-V = TypeVar("V")
-
-
-class Cache(Generic[K, V]):
+class Cache[K, V]:
     """泛型缓存类"""
 
     def __init__(self) -> None:
-        self._data: Dict[K, V] = {}
+        self._data: dict[K, V] = {}
 
     def set(self, key: K, value: V) -> None:
         """设置缓存"""
         self._data[key] = value
 
-    def get(self, key: K) -> Optional[V]:
+    def get(self, key: K) -> V | None:
         """获取缓存，不存在返回 None"""
         return self._data.get(key)
 
@@ -545,17 +529,17 @@ print(config["db"]["port"])  # 5432
 ```
 
 ```python
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 # 原代码的问题：
-# 1. List 和 Dict 没有指定泛型参数，不够具体
+# 1. list 和 dict 没有指定泛型参数，不够具体
 # 2. 应该明确 items 是包含 id 和 value 的字典列表
 # 3. 返回值应该指定键和值的类型
 
 
-def process_data(items: List[Dict[str, Any]]) -> Dict[Any, Any]:
+def process_data(items: list[dict[str, Any]]) -> dict[Any, Any]:
     """处理数据项"""
-    result: Dict[Any, Any] = {}
+    result: dict[Any, Any] = {}
     for item in items:
         result[item["id"]] = item["value"]
     return result
@@ -566,10 +550,10 @@ def process_data(items: List[Dict[str, Any]]) -> Dict[Any, Any]:
 # class DataItem(TypedDict):
 #     id: int
 #     value: str
-# def process_data(items: List[DataItem]) -> Dict[int, str]:
+# def process_data(items: list[DataItem]) -> dict[int, str]:
 
 
-def find_max(a: int, b: int) -> Optional[int]:
+def find_max(a: int, b: int) -> int | None:
     """返回较大的数"""
     if a == b:
         return None

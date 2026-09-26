@@ -213,6 +213,13 @@ with open("input.txt", "r") as fin:
 # 简化写法（Python 3.1+）
 with open("input.txt", "r") as fin, open("output.txt", "w") as fout:
     fout.write(fin.read().upper())
+
+# 括号写法（Python 3.10+）：管理器较多或需要换行时更清晰
+with (
+    open("input.txt", "r") as fin,
+    open("output.txt", "w") as fout,
+):
+    fout.write(fin.read().upper())
 ```
 
 ---

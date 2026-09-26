@@ -32,7 +32,7 @@ tags:
 | 17   | [[17-迭代器与生成器]]                             | 迭代器协议、可迭代对象、消费者、`range`、推导式、生成器与 `yield`、`yield from`、`send`、itertools |
 | 18   | [[18-上下文管理器]]                               | `with` 执行流程、`__enter__`/`__exit__`、异常抑制、`@contextmanager`、多上下文管理器               |
 | 19   | [[19-ABC]]                                        | 抽象类、`@abstractmethod`、抽象属性、接口约束、插件/数据源应用场景                                 |
-| 20   | [[20-类型标注]]                                   | 变量/函数标注、`Optional`/`Union`、容器类型、`Self`、泛型、`Callable`、`TypedDict`、`type: ignore` |
+| 20   | [[20-类型标注]]                                   | 变量/函数标注、`|` 联合类型、容器类型、`type` 别名、`Self`、泛型 `[T]`、`Callable`、`TypedDict`、`type: ignore` |
 | 21   | [[21-模块化]]                                     | 模块/包/成员、`__all__`、`__init__.py`、相对导入、搜索路径、循环导入                            |
 | 22   | [[22-标准库]]                                     | 官方文档导航、树形目录展示、Markdown 合并作业                                                    |
 | 23   | [[23-第三方库]]                                   | pip、镜像源、版本约束、requirements、venv、AI 聊天工具实战                                       |

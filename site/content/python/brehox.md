@@ -206,6 +206,9 @@ person["age"] = 26           # 修改已有键
 # 批量更新
 person.update({"phone": "123456", "age": 27})
 
+# 合并字典（Python 3.9+）：| 生成新字典，不修改原字典；|= 原地合并
+merged = person | {"email": "alice@example.com"}
+
 # 删除
 del person["phone"]          # 删除键值对
 value = person.pop("age")    # 删除并返回值
