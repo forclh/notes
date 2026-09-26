@@ -295,11 +295,228 @@ d = D()
 
 ## 参考答案
 
-> 作业源文件位于 `homework/` 目录，下方通过 Obsidian 嵌入直接展示代码。
-> 第三题为思考题，答案文件中附有输出分析与原因推导。
+> 第三题为思考题，答案中附有输出分析与原因推导。
 
-![[19-p1.py]]
+```python
+import json
+import os
+from abc import ABC, abstractmethod
 
-![[19-p2.py]]
 
-![[19-p3.py]]
+class Cache(ABC):
+    @abstractmethod
+    def get(self, key):
+        pass
+
+    @abstractmethod
+    def set(self, key, value):
+        pass
+
+    @abstractmethod
+    def delete(self, key):
+        pass
+
+
+class MemoryCache(Cache):
+    def __init__(self):
+        self._data = {}
+
+    def get(self, key):
+        return self._data.get(key)
+
+    def set(self, key, value):
+        self._data[key] = value
+
+    def delete(self, key):
+        if key in self._data:
+            del self._data[key]
+
+
+class FileCache(Cache):
+    def __init__(self, directory="cache"):
+        self._directory = directory
+        os.makedirs(directory, exist_ok=True)
+
+    def _get_path(self, key):
+        return os.path.join(self._directory, f"{key}.json")
+
+    def get(self, key):
+        path = self._get_path(key)
+        if not os.path.exists(path):
+            return None
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+
+    def set(self, key, value):
+        path = self._get_path(key)
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(value, f)
+
+    def delete(self, key):
+        path = self._get_path(key)
+        if os.path.exists(path):
+            os.remove(path)
+
+
+# 使用
+memory_cache = MemoryCache()
+memory_cache.set("name", "Alice")
+print(memory_cache.get("name"))  # Alice
+memory_cache.delete("name")
+print(memory_cache.get("name"))  # None
+
+file_cache = FileCache()
+file_cache.set("name", "Bob")
+print(file_cache.get("name"))  # Bob
+file_cache.delete("name")
+print(file_cache.get("name"))  # None
+```
+
+```python
+from abc import ABC, abstractmethod
+
+
+class Sequence(ABC):
+    @abstractmethod
+    def append(self, item):
+        pass
+
+    @abstractmethod
+    def get(self, index):
+        pass
+
+    @abstractmethod
+    def length(self):
+        pass
+
+    @abstractmethod
+    def __iter__(self):
+        pass
+
+    def is_empty(self):
+        return self.length() == 0
+
+
+class ListSequence(Sequence):
+    def __init__(self):
+        self._data = []
+
+    def append(self, item):
+        self._data.append(item)
+
+    def get(self, index):
+        return self._data[index]
+
+    def length(self):
+        return len(self._data)
+
+    def __iter__(self):
+        return iter(self._data)
+
+
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.next = None
+
+
+class LinkedListSequence(Sequence):
+    def __init__(self):
+        self._head = None
+        self._size = 0
+
+    def append(self, item):
+        new_node = Node(item)
+        if self._head is None:
+            self._head = new_node
+        else:
+            current = self._head
+            while current.next:
+                current = current.next
+            current.next = new_node
+        self._size += 1
+
+    def get(self, index):
+        if index < 0 or index >= self._size:
+            raise IndexError("index out of range")
+        current = self._head
+        for _ in range(index):
+            current = current.next
+        return current.value
+
+    def length(self):
+        return self._size
+
+    def __iter__(self):
+        current = self._head
+        while current:
+            yield current.value
+            current = current.next
+
+
+# 使用
+list_seq = ListSequence()
+list_seq.append(1)
+list_seq.append(2)
+list_seq.append(3)
+print(list_seq.get(1))  # 2
+print(list_seq.length())  # 3
+print(list(list_seq))  # [1, 2, 3]
+print(list_seq.is_empty())  # False
+
+linked_seq = LinkedListSequence()
+linked_seq.append("a")
+linked_seq.append("b")
+linked_seq.append("c")
+print(linked_seq.get(1))  # b
+print(linked_seq.length())  # 3
+print(list(linked_seq))  # ['a', 'b', 'c']
+print(linked_seq.is_empty())  # False
+```
+
+```python
+from abc import ABC, abstractmethod
+
+
+class A(ABC):
+    @abstractmethod
+    def foo(self):
+        pass
+
+    def bar(self):
+        print("A.bar")
+
+
+class B(A):
+    def foo(self):
+        print("B.foo")
+
+
+class C(B):
+    pass
+
+
+c = C()
+c.foo()
+c.bar()
+
+# 输出：
+# B.foo
+# A.bar
+#
+# 原因：
+# - C 继承自 B，B 已经实现了抽象方法 foo，所以 C 不需要再实现。
+# - C 没有自己的 foo 和 bar 方法，因此调用时会沿着 MRO 向上查找：
+#   - c.foo() -> B.foo() -> 输出 "B.foo"
+#   - c.bar() -> A.bar() -> 输出 "A.bar"
+
+
+# 第二问：
+# class D(A):
+#     pass
+#
+# d = D()
+#
+# 运行结果：TypeError: Can't instantiate abstract class D with abstract method foo
+# 原因：D 继承自 A，但没有实现抽象方法 foo，因此 D 仍然是抽象类，不能被实例化。
+```

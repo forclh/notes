@@ -434,8 +434,7 @@ def find_max(a: int, b: int) -> int | None:
 
 ## 参考答案
 
-> 作业源文件位于 `homework/` 目录，下方通过 Obsidian 嵌入直接展示代码。
-> 第四题为思考题，答案文件中附有问题分析与改进写法。
+> 第四题为思考题，答案中附有问题分析与改进写法。
 
 ```python
 def calculate_bmi(weight: float, height: float) -> float:

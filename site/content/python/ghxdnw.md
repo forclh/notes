@@ -247,8 +247,6 @@ print(calc.sub(10, 4))
 
 ## 参考答案
 
-> 作业源文件位于 `homework/` 目录，下方通过 Obsidian 嵌入直接展示代码。
-
 ```python
 class SingletonMeta(type):
     _instance = {}

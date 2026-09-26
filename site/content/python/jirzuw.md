@@ -219,8 +219,6 @@ deactivate
 
 ## 参考答案
 
-> 参考答案是一个完整的小项目，直接内联展示。运行前先准备依赖和环境变量。
-
 依赖（等价于 `requirements.txt` 中的 `requests>=2.31.0`、`python-dotenv>=1.0.0`）：
 
 ```bash
@@ -238,7 +236,6 @@ API_KEY=your_api_key_here
 `python-dotenv` 的基本用法：
 
 ```python
-# demo.py —— 演示从 .env 加载环境变量
 from dotenv import load_dotenv
 import os
 

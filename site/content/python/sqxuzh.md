@@ -365,8 +365,6 @@ print(withdraw(200))  # 余额不足
 
 ## 参考答案
 
-> 作业源文件位于 `homework/` 目录，下方通过 Obsidian 嵌入直接展示代码。
-
 ```python
 # 作业一答案：作用域判断
 

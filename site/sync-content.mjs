@@ -4,9 +4,9 @@
  *
  * 1. 为每篇缺少 permalink 的笔记分配 6 位小写短码，写回源笔记 frontmatter（永久固定）；
  *    已有 permalink 统一转小写（Quartz 的 slug 解析会小写化 URL，避免大小写不一致）
- * 2. 把 homework/ 拷入 site/content/<短名>/homework/（ASCII 文件名，安全）
+ * 2. 把 homework/ 拷入 site/content/<短名>/homework/（ASCII 文件名，安全；目录不存在时跳过）
  * 3. 由源笔记生成 site/content/<短名>/<短码>.md：
- *    - ![[xx.py]] 嵌入替换为高亮代码块（Quartz 无需额外插件）
+ *    - ![[xx.py]] 嵌入替换为高亮代码块（Quartz 无需额外插件；现笔记已全部内联，仅为兼容保留）
  *    - [[文件名]] 双链重写为 [[<短名>/<短码>]]，保证链接解析（解析不认 aliases）
  * 4. 用专题目录页生成首页 content/index.md
  *
@@ -127,11 +127,15 @@ const rewriteWikiLinks = (text) =>
 let embedded = 0;
 for (const { dir, short, srcDir, notes } of subjects) {
   const destDir = path.join(contentDir, short);
-  copyDir(path.join(srcDir, "homework"), path.join(destDir, "homework"));
+  fs.mkdirSync(destDir, { recursive: true });
+  const srcHomework = path.join(srcDir, "homework");
+  if (fs.existsSync(srcHomework)) copyDir(srcHomework, path.join(destDir, "homework"));
 
   // 建立 文件名 → .py 内容 的索引（嵌入按文件名引用，忽略路径）
-  const pyFiles = fs.readdirSync(path.join(destDir, "homework"));
-  const pyIndex = new Map(pyFiles.map((f) => [f, path.join(destDir, "homework", f)]));
+  const hwDir = path.join(destDir, "homework");
+  const pyIndex = fs.existsSync(hwDir)
+    ? new Map(fs.readdirSync(hwDir).map((f) => [f, path.join(hwDir, f)]))
+    : new Map();
 
   for (const { file, name, code } of notes) {
     let text = fs.readFileSync(file, "utf8");

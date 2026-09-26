@@ -465,8 +465,6 @@ print(repr(f1))       # "Fraction(1, 2)"
 
 ## 参考答案
 
-> 作业源文件位于 `homework/` 目录，下方通过 Obsidian 嵌入直接展示代码。
-
 ```python
 import math
 from functools import total_ordering

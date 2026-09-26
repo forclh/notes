@@ -320,8 +320,6 @@ def robust_api_call():
 
 ## 参考答案
 
-> 作业源文件位于 `homework/` 目录，下方通过 Obsidian 嵌入直接展示代码。
-
 ```python
 def safe_divide(a, b):
     """

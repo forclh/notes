@@ -607,7 +607,7 @@ else:
 
 ## 作业
 
-作业答案见文末 [[#参考答案]]，源文件位于 `homework/` 目录中
+作业答案见文末 [[#参考答案]]
 
 ### 作业一：代码输出结果预测
 
@@ -817,12 +817,226 @@ print(b)
 
 ## 参考答案
 
-> 作业源文件位于 `homework/` 目录，下方通过 Obsidian 嵌入直接展示代码。
+```python
+# 作业一答案
 
-![[03-p1.py]]
+# 变量定义
+a = 10
+b = 3.5
+c = "Python"
+d = True
+e = None
 
-![[03-p2.py]]
+# 1. 数据类型与 type 函数
+print(type(a))  # <class 'int'>
+print(type(b))  # <class 'float'>
+print(type(c))  # <class 'str'>
+print(type(d))  # <class 'bool'>
+print(type(e))  # <class 'NoneType'>
+print(type(a) == int)  # True
 
-![[03-p3.py]]
+# 2. 变量类型转换
+print(int(b))  # 3
+print(float(a))  # 10.0
+print(str(a) + c)  # 10Python
+print(bool(0))  # False
+print(bool(""))  # False
+print(bool("hello"))  # True
 
-![[03-p4.py]]
+# 3. 算术运算符
+print(a + 5)  # 15
+print(a / 4)  # 2.5
+print(a // 4)  # 2
+print(a % 4)  # 2
+print(a**2)  # 100
+print(c * 2)  # PythonPython
+
+# 4. 字符串格式化（f-string）
+name = "Alice"
+age = 25
+print(f"姓名: {name}, 年龄: {age}")  # 姓名: Alice, 年龄: 25
+print(f"明年{age + 1}岁")  # 明年26岁
+print(f"{a} + {5} = {a + 5}")  # 10 + 5 = 15
+
+# 5. 比较运算符与链式比较
+print(a > 5)  # True
+print(a == 10)  # True
+print(5 < a < 20)  # True
+print(c == "python")  # False
+print("A" < "a")  # True
+
+# 6. 逻辑运算符
+print(True and False)  # False
+print(True or False)  # True
+print(not d)  # False
+print(0 and 5)  # 0
+print(3 or 5)  # 3
+print("" and "hello")  #
+print("hi" or "hello")  # hi
+print(not None)  # True
+
+# 7. 三元运算符
+score = 85
+result = "及格" if score >= 60 else "不及格"
+print(result)  # 及格
+level = "A" if score >= 90 else ("B" if score >= 80 else "C")
+print(level)  # B
+
+# 8. 赋值运算符
+x = 10
+x += 5
+print(x)  # 15
+x -= 3
+print(x)  # 12
+x *= 2
+print(x)  # 24
+x /= 4
+print(x)  # 6.0
+
+s = "Hi"
+s += " Python"
+print(s)  # Hi Python
+s *= 2
+print(s)  # Hi PythonHi Python
+```
+
+```python
+# 作业二答案
+
+# 1. while 循环 + if-else
+n = 1
+result = 0
+while n <= 5:
+    if n % 2 == 0:
+        result += n
+    else:
+        result -= n
+    n += 1
+print(result)  # -3
+
+# 2. continue 和 break
+num = 1
+while num <= 10:
+    if num == 3:
+        num += 1
+        continue
+    if num == 7:
+        break
+    print(num)  # 1, 2, 4, 5, 6
+    num += 1
+
+# 3. 循环 else 子句
+i = 0
+while i < 3:
+    print(i)  # 0, 1, 2
+    i += 1
+else:
+    print("end")  # end
+
+# 4. 嵌套条件
+x = 15
+if x < 10:
+    print("A")
+elif x < 20:
+    if x % 2 == 0:
+        print("B")
+    else:
+        print("C")  # C
+else:
+    print("D")
+
+# 5. 综合练习
+a = 1
+b = 0
+while a <= 5:
+    if a == 3:
+        b += 10
+    elif a % 2 == 0:
+        b += a * 2
+    else:
+        b += a
+    a += 1
+print(b)  # 28
+```
+
+```python
+# 作业三：BMI 计算器
+
+# 获取用户输入
+height = float(input("请输入您的身高（米）："))
+weight = float(input("请输入您的体重（千克）："))
+
+# 计算 BMI
+bmi = weight / (height**2)
+
+# 判断分类
+if bmi < 18.5:
+    category = "偏瘦"
+    advice = "建议适当增加营养摄入，多吃富含蛋白质的食物，进行适量力量训练。"
+elif bmi < 24:
+    category = "正常"
+    advice = "保持良好的生活习惯，均衡饮食，适量运动，继续保持！"
+elif bmi < 28:
+    category = "超重"
+    advice = "建议控制饮食，减少高热量食物摄入，增加有氧运动，如慢跑、游泳等。"
+else:
+    category = "肥胖"
+    advice = "建议咨询专业医生或营养师，制定科学的减重计划，注意饮食控制和规律运动。"
+
+# 输出结果
+print(f"\n您的 BMI 值为：{bmi:.2f}")
+print(f"身体状况：{category}")
+print(f"建议：{advice}")
+```
+
+```python
+# 作业四：素数筛选器（参考答案）
+
+# 获取并验证起始数字
+while True:
+    start = int(input("请输入起始数字："))
+    if start <= 0:
+        print("输入无效，请输入一个正整数！")
+        continue
+    break
+
+# 获取并验证结束数字
+while True:
+    end = int(input("请输入结束数字："))
+    if end <= 0:
+        print("输入无效，请输入一个正整数！")
+        continue
+    if end <= start:
+        print(f"结束数字必须大于起始数字 {start}，请重新输入！")
+        continue
+    break
+
+# 输出结果
+print(f"\n{start} 到 {end} 之间的素数有：")
+
+# 使用 while 循环遍历范围内的每个数字
+num = start
+prime_count = 0
+
+while num <= end:
+    if num >= 2:
+        # 判断 num 是否为素数
+        is_prime = True
+        i = 2
+        while i * i <= num:
+            if num % i == 0:
+                is_prime = False
+                break
+            i += 1
+
+        if is_prime:
+            if prime_count > 0:
+                print(" ", end="")
+            print(num, end="")
+            prime_count += 1
+
+    num += 1
+
+print()
+print(f"共计 {prime_count} 个素数")
+```
