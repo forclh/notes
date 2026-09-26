@@ -1,0 +1,172 @@
+---
+chapter: 22
+title: 22 标准库
+tags:
+  - python
+  - 课件
+  - 标准库
+  - os
+  - re
+---
+官方手册：
+
+- 按功能：https://docs.python.org/zh-cn/3.14/library/index.html
+- 按名称：https://docs.python.org/zh-cn/3/py-modindex.html
+
+包含：
+
+- 内置API
+- 内置模块
+- 标准库
+
+## 作业（可使用AI）
+
+### 作业一：树形目录展示
+
+编写一个函数 `show_tree(dir_path: str, show_hidden: bool = False)`，接收两个参数：
+
+- `dir_path`：目录路径，可以是绝对路径或相对路径（相对当前工作目录 CWD）
+- `show_hidden`：布尔类型，表示是否显示隐藏文件/目录
+
+  隐藏判断简单处理：文件或目录只要以`.`开头，则视为隐藏文件或目录，否则的话视为可视。
+
+函数的功能是用树形递归的方式展示指定目录下的所有内容。效果类似于 Linux 的 `tree` 命令。
+
+输出格式参考如下：
+```
+.
+├── file1.txt
+├── dir1
+│   ├── file2.txt
+│   └── file3.txt
+└── file4.txt
+```
+
+### 作业二：Markdown 文件合并
+
+编写一个函数 `merge_markdown(files: list[str], output: str) -> None`，接收两个参数：
+
+- `files`：Markdown 文件路径列表
+- `output`：合并后保存的目标文件路径
+
+函数的作用是将多个 Markdown 文件合并为一个文件保存到目标路径。合并规则如下：
+
+1. 最终合并结果的一级标题固定为 `# 合并结果`
+2. 所有原始 Markdown 文件的标题需要降级：
+   - 一级标题 `#` → 二级标题 `##`
+   - 二级标题 `##` → 三级标题 `###`
+   - 以此类推
+   - 六级标题 `######` → 正文，用 **加粗** 表示
+3. 非标题内容（正文、列表、代码块等）保持不变
+
+## 参考答案
+
+> 参考答案直接内联展示：每题先给出调用方式，再给出完整实现（`answer.py`）。
+
+### 作业一参考：show_tree
+
+```python
+# answer.py
+import os
+
+__all__: list[str] = ["show_tree"]
+
+
+def _is_hidden(filepath: str) -> bool:
+    """判断文件或文件夹是否隐藏"""
+    filepath = os.path.abspath(filepath)  # 始终转换为绝对路径
+    if not os.path.exists(filepath):
+        raise FileNotFoundError(f"路径不存在: {filepath}")
+    basename = os.path.basename(filepath)
+    return basename.startswith(".")
+
+
+def show_tree(dir_path: str, show_hidden: bool = False, _prefix: str = "") -> None:
+    """以树形递归方式展示目录内容。"""
+    path = os.path.abspath(dir_path)  # 始终转换为绝对路径
+
+    if not _prefix:
+        root_name = os.path.basename(path) or path
+        print(root_name)
+
+    entries = os.listdir(path)
+    if not show_hidden:
+        entries = [e for e in entries if not _is_hidden(os.path.join(path, e))]
+
+    entries.sort()
+
+    for i, entry in enumerate(entries):
+        entry_path = os.path.join(path, entry)
+        is_last = i == len(entries) - 1
+
+        connector = "└── " if is_last else "├── "
+        print(f"{_prefix}{connector}{entry}")
+
+        if os.path.isdir(entry_path):
+            extension = "    " if is_last else "│   "
+            show_tree(entry_path, show_hidden, _prefix + extension)
+```
+
+调用方式：
+
+```python
+import answer
+
+answer.show_tree("./")        # 展示当前目录
+answer.show_tree("./", True)  # 包含隐藏文件/目录
+```
+
+实现要点：递归时用 `_prefix` 累积缩进（`│   ` / `    `），用"是否最后一个条目"决定连接符 `└── ` / `├── `；`_prefix` 以下划线开头，表示不属于公开 API。
+
+### 作业二参考：merge_markdown
+
+```python
+# answer.py
+import re
+import os
+
+__all__: list[str] = ["merge_markdown"]
+
+HEADING_RE = re.compile(r"^(#{1,6})\s+(.+)$", re.MULTILINE)
+
+
+def _demote_heading(match: re.Match) -> str:
+    """将匹配到的标题降级。"""
+    hashes, content = match.group(1), match.group(2)
+    level = len(hashes)
+    if level < 6:
+        return f'{"#" * (level + 1)} {content}'
+    else:
+        return f"**{content}**"
+
+
+def merge_markdown(files: list[str], output: str) -> None:
+    """合并多个 Markdown 文件，所有标题降级一级。"""
+    parts: list[str] = ["# 合并结果", ""]
+
+    for filepath in files:
+        filepath = os.path.abspath(filepath)
+        with open(filepath, encoding="utf-8") as f:
+            content = f.read()
+
+        demoted = HEADING_RE.sub(_demote_heading, content)
+        parts.append(demoted.strip())
+        parts.append("")
+
+    output = os.path.abspath(output)
+    with open(output, "w", encoding="utf-8") as f:
+        f.write("\n".join(parts).strip() + "\n")
+```
+
+调用方式：
+
+```python
+import answer
+
+answer.merge_markdown(
+    ["./01-必看导言.md", "./03-Python基本语法.md"],
+    "./合并结果.md",
+)
+```
+
+实现要点：`re.MULTILINE` 让 `^` 匹配每一行的行首，一个正则一次替换完成全部标题降级；六级标题是降级的边界情况（`######` 没有七级标题），单独转成加粗正文。

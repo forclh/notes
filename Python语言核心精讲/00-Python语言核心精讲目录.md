@@ -33,9 +33,14 @@ tags:
 | 18   | [[18-上下文管理器]]                               | `with` 执行流程、`__enter__`/`__exit__`、异常抑制、`@contextmanager`、多上下文管理器               |
 | 19   | [[19-ABC]]                                        | 抽象类、`@abstractmethod`、抽象属性、接口约束、插件/数据源应用场景                                 |
 | 20   | [[20-类型标注]]                                   | 变量/函数标注、`Optional`/`Union`、容器类型、`Self`、泛型、`Callable`、`TypedDict`、`type: ignore` |
+| 21   | [[21-模块化]]                                     | 模块/包/成员、`__all__`、`__init__.py`、相对导入、搜索路径、循环导入                            |
+| 22   | [[22-标准库]]                                     | 官方文档导航、树形目录展示、Markdown 合并作业                                                    |
+| 23   | [[23-第三方库]]                                   | pip、镜像源、版本约束、requirements、venv、AI 聊天工具实战                                       |
+| 24   | [[24-事件循环]]                                   | 同步 vs 异步、事件循环、`run_forever`、`call_soon`/`call_later`、队列调度预测                    |
 
 ## 按标签浏览
 
 - 课件：`#课件`
 - 主题索引：`#list` `#dict` `#set` `#tuple` · `#函数` `#作用域` `#闭包` · `#lambda` `#高阶函数` · `#类` `#对象` `#继承` `#MRO` `#元类` `#__new__` `#单例模式` `#可调用对象` `#__call__` `#metaclass` `#魔术方法` `#__str__` `#__getitem__` `#描述符` `#property` · `#装饰器` `#wraps` · `#异常处理` `#try` `#except` `#raise` `#异常链` · `#迭代器` `#可迭代对象` `#生成器` `#yield` `#推导式` `#itertools` · `#上下文管理器` `#with` `#contextmanager` · `#ABC` `#抽象类` `#abstractmethod` · `#类型标注` `#typing` `#泛型` `#TypedDict` `#Callable`
 - 工具链：`#pyenv` `#VSCode`
+- 工程化：`#模块化` `#模块` `#包` `#导入` `#__init__` `#__all__` `#相对导入` `#循环导入` · `#标准库` `#os` `#re` · `#第三方库` `#pip` `#虚拟环境` `#venv` `#依赖管理` `#dotenv` · `#异步` `#事件循环` `#asyncio` `#call_soon`
